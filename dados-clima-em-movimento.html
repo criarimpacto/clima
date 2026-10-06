@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dados e Monitoramento - Clima em Movimento | Observatório Oceano-Atmosfera</title>
+  
+  <!-- Fontes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            ocean: {
+              950: '#020713',
+              900: '#051024',
+              850: '#081734',
+              800: '#0d2249',
+              700: '#1a4185',
+            }
+          },
+          boxShadow: {
+            'glow-cyan': '0 0 25px -2px rgba(6, 182, 212, 0.45)',
+            'glow-orange': '0 0 25px -2px rgba(249, 115, 22, 0.45)',
+            'glow-emerald': '0 0 25px -2px rgba(16, 185, 129, 0.45)',
+            'glow-blue': '0 0 30px -3px rgba(37, 99, 235, 0.4)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #020713;
+      color: #f1f5f9;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+    }
+    
+    /* Header Padronizado */
+    .cm-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      background: rgba(3,8,22,.88);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      box-sizing: border-box;
+      width: 100%;
+    }
+    @media(min-width: 1024px) {
+      .cm-header { padding: 12px 48px; }
+    }
+    .cm-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .cm-logo-ic {
+      width: 40px;
+      height: 40px;
+      border-radius: 9999px;
+      background: rgba(8,145,178,.25);
+      border: 1px solid rgba(34,211,238,.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #67e8f9;
+      transition: transform .15s;
+    }
+    .cm-logo:hover .cm-logo-ic { transform: scale(1.05); }
+    .cm-logo-ic i, .cm-logo-ic svg { width: 20px; height: 20px; }
+    .cm-logo h1 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: .05em;
+      line-height: 1;
+      color: #fff;
+    }
+    .cm-logo p {
+      margin: 2px 0 0;
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: .025em;
+      color: rgba(103,232,249,.8);
+    }
+    @media(min-width: 640px) {
+      .cm-logo h1 { font-size: 16px; }
+      .cm-logo p { font-size: 11px; }
+    }
+    .cm-nav {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    @media(min-width: 1280px) {
+      .cm-nav { display: flex; }
+    }
+    .cm-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: #cbd5e1;
+      font: inherit;
+      line-height: 1rem;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .cm-btn:hover {
+      background: rgba(30,41,59,.6);
+      color: var(--hv);
+    }
+    .cm-btn i, .cm-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+    .cm-ic-orange { color: #fb923c; }
+    .cm-ic-cyan { color: #67e8f9; }
+    .cm-btn.cm-active {
+      background: rgba(6,182,212,.2);
+      color: #67e8f9;
+      border-color: rgba(34,211,238,.4);
+    }
+    .cm-btn.cm-active:hover { color: #67e8f9; }
+
+    /* Custom Cards e Animações */
+    .glass-panel {
+      background: rgba(5, 16, 36, 0.7);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(26, 65, 133, 0.45);
+    }
+    .glass-card {
+      background: rgba(8, 23, 52, 0.6);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(26, 65, 133, 0.35);
+    }
+    .bar-transition {
+      transition: width 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-cyan-500 selection:text-ocean-950">
+
+  <!-- ========================================== -->
+  <!-- 1. NAVBAR SUPERIOR PADRONIZADA            -->
+  <!-- ========================================== -->
+  <header class="cm-header">
+    <div class="cm-logo" onclick="window.location.href='gemini-pagina-inicial.html'">
+      <div class="cm-logo-ic"><i data-lucide="globe"></i></div>
+      <div>
+        <h1>CLIMA EM MOVIMENTO</h1>
+        <p>Quando o oceano muda, o planeta responde.</p>
+      </div>
+    </div>
+    <nav class="cm-nav">
+      <button class="cm-btn" onclick="window.location.href='gemini-pagina-inicial.html'" style="--hv:#ffffff">
+        <i data-lucide="home"></i> Início
+      </button>
+      <button class="cm-btn" onclick="window.location.href='clima_em_movimento_o_fen_meno-2.html'" style="--hv:#ffffff">
+        <i data-lucide="waves"></i> O Fenômeno
+      </button>
+      <button class="cm-btn" onclick="window.location.href='clima_em_movimento_el_ni_no.html'" style="--hv:#fb923c">
+        <i data-lucide="flame" class="cm-ic-orange"></i> El Niño
+      </button>
+      <button class="cm-btn" onclick="window.location.href='la_nina_clima_em_movimento.html'" style="--hv:#67e8f9">
+        <i data-lucide="snowflake" class="cm-ic-cyan"></i> La Niña
+      </button>
+      <button class="cm-btn" onclick="window.location.href='brasil-clima-em-movimento.html'" style="--hv:#34d399">
+        <i data-lucide="map-pin"></i> Brasil
+      </button>
+      <!-- ITEM ATIVO: DADOS -->
+      <button class="cm-btn cm-active">
+        <i data-lucide="bar-chart-2"></i> Dados
+      </button>
+      <button class="cm-btn" onclick="window.location.href='desafio-clima-em-movimento.html'" style="--hv:#ffffff"><i data-lucide="gamepad-2"></i> Desafio</button>
+    </nav>
+  </header>
+
+  <!-- ========================================== -->
+  <!-- CONTEÚDO PRINCIPAL                         -->
+  <!-- ========================================== -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-20 relative z-10 w-full flex-1">
+
+    <!-- CABEÇALHO DA PÁGINA -->
+    <section class="text-center max-w-3xl mx-auto mb-12">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-950/60 border border-cyan-500/40 text-cyan-300 text-xs font-semibold uppercase tracking-wider mb-4 shadow-glow-cyan">
+        <i data-lucide="activity" class="w-3.5 h-3.5"></i>
+        Observatório Científico & Séries Temporais
+      </div>
+      <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight">
+        DADOS & <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-sky-300 to-blue-500">MONITORAMENTO</span>
+      </h1>
+      <p class="text-slate-300 text-sm sm:text-base mt-3 leading-relaxed">
+        Comparações físicas oceano-atmosfera, anomalias climáticas históricas nas regiões do Brasil e séries temporais do ENOS.
+      </p>
+
+      <!-- Atalhos de Navegação Rápida (Anchor links) -->
+      <div class="flex items-center justify-center gap-3 mt-6 flex-wrap">
+        <a href="#bloco-comparador" class="px-4 py-2 rounded-xl bg-ocean-850 hover:bg-ocean-800 border border-ocean-700/80 text-xs font-semibold text-slate-200 transition flex items-center gap-2">
+          <i data-lucide="arrow-down-circle" class="w-4 h-4 text-cyan-400"></i> Comparador Físico
+        </a>
+        <a href="#bloco-brasil" class="px-4 py-2 rounded-xl bg-ocean-850 hover:bg-ocean-800 border border-ocean-700/80 text-xs font-semibold text-slate-200 transition flex items-center gap-2">
+          <i data-lucide="arrow-down-circle" class="w-4 h-4 text-emerald-400"></i> Impactos por Região
+        </a>
+        <a href="#bloco-historico" class="px-4 py-2 rounded-xl bg-ocean-850 hover:bg-ocean-800 border border-ocean-700/80 text-xs font-semibold text-slate-200 transition flex items-center gap-2">
+          <i data-lucide="arrow-down-circle" class="w-4 h-4 text-orange-400"></i> Linha do Tempo & Séries
+        </a>
+        <a href="#bloco-redes" class="px-4 py-2 rounded-xl bg-ocean-850 hover:bg-ocean-800 border border-ocean-700/80 text-xs font-semibold text-slate-200 transition flex items-center gap-2">
+          <i data-lucide="arrow-down-circle" class="w-4 h-4 text-sky-400"></i> Redes de Observação
+        </a>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- BLOCO 1: COMPARADOR DIRETO (EL NIÑO vs LA NIÑA)          -->
+    <!-- ======================================================== -->
+    <section id="bloco-comparador" class="mb-20 scroll-mt-24">
+      <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+        <div>
+          <h2 class="text-xl sm:text-2xl font-black text-white flex items-center gap-2.5">
+            <span class="p-2 rounded-xl bg-cyan-600/20 text-cyan-400 border border-cyan-500/30">
+              <i data-lucide="columns" class="w-5 h-5"></i>
+            </span>
+            Comparador Direto: Diagnósticos Físicos do Pacífico
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-400 mt-1">
+            Como cada parâmetro fundamental se inverte entre a fase quente e a fase fria do ENOS.
+          </p>
+        </div>
+        <div class="text-xs font-mono text-cyan-400 bg-ocean-950 px-3 py-1.5 rounded-lg border border-cyan-500/30">
+          Fonte: NOAA CPC / OMM
+        </div>
+      </div>
+
+      <!-- Tabela Comparativa Detalhada -->
+      <div class="glass-panel rounded-3xl overflow-hidden shadow-2xl">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs sm:text-sm border-collapse">
+            <thead>
+              <tr class="border-b border-ocean-700/80 bg-ocean-950/80 font-mono text-xs">
+                <th class="py-4 px-5 text-slate-300">Variável Oceanográfica / Atmosférica</th>
+                <th class="py-4 px-5 text-orange-400 bg-orange-950/20">
+                  <span class="flex items-center gap-1.5 font-bold">
+                    <i data-lucide="flame" class="w-4 h-4 text-orange-400"></i> EL NIÑO (Fase Quente)
+                  </span>
+                </th>
+                <th class="py-4 px-5 text-cyan-300 bg-cyan-950/20">
+                  <span class="flex items-center gap-1.5 font-bold">
+                    <i data-lucide="snowflake" class="w-4 h-4 text-cyan-300"></i> LA NIÑA (Fase Fria)
+                  </span>
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-ocean-800/80">
+              <tr class="hover:bg-ocean-850/50 transition">
+                <td class="py-3.5 px-5 font-bold text-white">
+                  Anomalia de TSM (Região Niño 3.4)
+                  <span class="block text-[11px] font-normal text-slate-400">Desvio térmico em relação à média de 30 anos</span>
+                </td>
+                <td class="py-3.5 px-5 font-mono text-orange-300 bg-orange-950/10 font-bold">
+                  +0,5 °C a +2,5 °C
+                </td>
+                <td class="py-3.5 px-5 font-mono text-cyan-300 bg-cyan-950/10 font-bold">
+                  -0,5 °C a -2,1 °C
+                </td>
+              </tr>
+              <tr class="hover:bg-ocean-850/50 transition">
+                <td class="py-3.5 px-5 font-bold text-white">
+                  Ventos Alísios (Leste ➔ Oeste)
+                  <span class="block text-[11px] font-normal text-slate-400">Intensidade do sopro equatorial</span>
+                </td>
+                <td class="py-3.5 px-5 text-slate-200 bg-orange-950/10">
+                  <span class="text-rose-400 font-semibold">Enfraquecidos</span> ou invertidos para oeste
+                </td>
+                <td class="py-3.5 px-5 text-slate-200 bg-cyan-950/10">
+                  <span class="text-cyan-400 font-semibold">Muito fortes</span>, acelerados e persistentes
+                </td>
+              </tr>
+              <tr class="hover:bg-ocean-850/50 transition">
+                <td class="py-3.5 px-5 font-bold text-white">
+                  Profundidade da Termoclina (Pacífico Leste)
+                  <span class="block text-[11px] font-normal text-slate-400">Fronteira entre água quente e água fria profunda</span>
+                </td>
+                <td class="py-3.5 px-5 text-slate-200 bg-orange-950/10">
+                  <span class="font-mono text-orange-300 font-bold">Aprofundada (~120 m)</span> — piscina quente espalhada
+                </td>
+                <td class="py-3.5 px-5 text-slate-200 bg-cyan-950/10">
+                  <span class="font-mono text-cyan-300 font-bold">Muito Rasa (~20 m)</span> — água fria aflora à tona
+                </td>
+              </tr>
+              <tr class="hover:bg-ocean-850/50 transition">
+                <td class="py-3.5 px-5 font-bold text-white">
+                  Ressurgência Costeira (Peru / Equador)
+                  <span class="block text-[11px] font-normal text-slate-400">Nutrientes marinhos e cadeia pesqueira</span>
+                </td>
+                <td class="py-3.5 px-5 text-slate-200 bg-orange-950/10">
+                  <span class="text-rose-400 font-semibold">Drasticamente bloqueada</span> (queda pesqueira)
+                </td>
+                <td class="py-3.5 px-5 text-slate-200 bg-cyan-950/10">
+                  <span class="text-emerald-400 font-semibold">Altamente ativa e rica</span> em biomassa
+                </td>
+              </tr>
+              <tr class="hover:bg-ocean-850/50 transition">
+                <td class="py-3.5 px-5 font-bold text-white">
+                  Índice de Oscilação Sul (SOI)
+                  <span class="block text-[11px] font-normal text-slate-400">Diferença de pressão: Taiti − Darwin</span>
+                </td>
+                <td class="py-3.5 px-5 font-mono text-rose-400 bg-orange-950/10 font-bold">
+                  Negativo (&lt; -0,8)
+                </td>
+                <td class="py-3.5 px-5 font-mono text-emerald-400 bg-cyan-950/10 font-bold">
+                  Positivo (&gt; +0,8)
+                </td>
+              </tr>
+              <tr class="hover:bg-ocean-850/50 transition">
+                <td class="py-3.5 px-5 font-bold text-white">
+                  Circulação de Walker
+                  <span class="block text-[11px] font-normal text-slate-400">Célula de convecção tropical de grande escala</span>
+                </td>
+                <td class="py-3.5 px-5 text-slate-200 bg-orange-950/10">
+                  Deslocada para o centro/leste do Pacífico
+                </td>
+                <td class="py-3.5 px-5 text-slate-200 bg-cyan-950/10">
+                  Intensificada sobre a Indonésia e Pacífico Oeste
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- BLOCO 2: PAINEL REGIONAL INTERATIVO DO BRASIL            -->
+    <!-- ======================================================== -->
+    <section id="bloco-brasil" class="mb-20 scroll-mt-24">
+      <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+        <div>
+          <h2 class="text-xl sm:text-2xl font-black text-white flex items-center gap-2.5">
+            <span class="p-2 rounded-xl bg-emerald-600/20 text-emerald-400 border border-emerald-500/30">
+              <i data-lucide="map" class="w-5 h-5"></i>
+            </span>
+            Impactos Estatísticos por Região Brasileira
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-400 mt-1">
+            Selecione uma região geográfica para analisar as anomalias históricas de chuva e temperatura.
+          </p>
+        </div>
+        <div class="text-xs font-mono text-emerald-400 bg-ocean-950 px-3 py-1.5 rounded-lg border border-emerald-500/30">
+          Dados: INMET & CPTEC/INPE
+        </div>
+      </div>
+
+      <!-- Botoeira Seletora de Regiões -->
+      <div class="flex items-center gap-2 sm:gap-3 overflow-x-auto pb-2 mb-6">
+        <button onclick="selecionarRegiao('sul')" id="btn-reg-sul" class="btn-reg px-4 py-2.5 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 shrink-0 bg-emerald-500 text-ocean-950 shadow-glow-emerald">
+          <i data-lucide="map-pin" class="w-3.5 h-3.5"></i> Sul
+        </button>
+        <button onclick="selecionarRegiao('sudeste')" id="btn-reg-sudeste" class="btn-reg px-4 py-2.5 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 shrink-0 bg-ocean-850 text-slate-300 hover:text-white hover:bg-ocean-800 border border-ocean-700/60">
+          <i data-lucide="map-pin" class="w-3.5 h-3.5"></i> Sudeste
+        </button>
+        <button onclick="selecionarRegiao('nordeste')" id="btn-reg-nordeste" class="btn-reg px-4 py-2.5 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 shrink-0 bg-ocean-850 text-slate-300 hover:text-white hover:bg-ocean-800 border border-ocean-700/60">
+          <i data-lucide="map-pin" class="w-3.5 h-3.5"></i> Nordeste
+        </button>
+        <button onclick="selecionarRegiao('norte')" id="btn-reg-norte" class="btn-reg px-4 py-2.5 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 shrink-0 bg-ocean-850 text-slate-300 hover:text-white hover:bg-ocean-800 border border-ocean-700/60">
+          <i data-lucide="map-pin" class="w-3.5 h-3.5"></i> Norte
+        </button>
+        <button onclick="selecionarRegiao('centro-oeste')" id="btn-reg-centro-oeste" class="btn-reg px-4 py-2.5 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 shrink-0 bg-ocean-850 text-slate-300 hover:text-white hover:bg-ocean-800 border border-ocean-700/60">
+          <i data-lucide="map-pin" class="w-3.5 h-3.5"></i> Centro-Oeste
+        </button>
+      </div>
+
+      <!-- Container do Conteúdo da Região Selecionada -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Cartão de Anomalias de Chuva (Visualizador Comparativo) -->
+        <div class="lg:col-span-7 glass-panel rounded-3xl p-6 sm:p-8 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between border-b border-ocean-800/80 pb-4 mb-6">
+              <div>
+                <span class="text-[11px] font-mono uppercase tracking-wider text-emerald-400 font-bold block" id="reg-tag">
+                  REGIÃO SUL (RS, SC, PR)
+                </span>
+                <h3 class="text-xl font-black text-white mt-0.5" id="reg-titulo">
+                  Desvios Históricos de Precipitação Pluviométrica
+                </h3>
+              </div>
+              <span class="px-3 py-1 rounded-full text-xs font-mono bg-ocean-950 text-slate-400 border border-ocean-700/60">
+                Média Climatológica
+              </span>
+            </div>
+
+            <!-- Gráfico Comparativo de Barras Visuais -->
+            <div class="space-y-6">
+              <!-- Barra El Niño -->
+              <div>
+                <div class="flex justify-between items-center text-xs font-semibold mb-2">
+                  <span class="flex items-center gap-1.5 text-orange-400">
+                    <i data-lucide="flame" class="w-4 h-4"></i> No El Niño:
+                  </span>
+                  <span class="font-mono text-orange-300 font-bold" id="bar-nino-val">+35% a +60% acima da média</span>
+                </div>
+                <div class="w-full h-4 rounded-full bg-ocean-950 overflow-hidden border border-ocean-800 p-0.5">
+                  <div id="bar-nino" class="bar-transition h-full rounded-full bg-gradient-to-r from-amber-500 to-orange-500" style="width: 85%;"></div>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-1.5" id="bar-nino-desc">
+                  Temporais frequentes e risco severo de cheias nos vales dos rios Jacuí, Taquari e Uruguai.
+                </p>
+              </div>
+
+              <!-- Barra La Niña -->
+              <div>
+                <div class="flex justify-between items-center text-xs font-semibold mb-2">
+                  <span class="flex items-center gap-1.5 text-cyan-300">
+                    <i data-lucide="snowflake" class="w-4 h-4"></i> Na La Niña:
+                  </span>
+                  <span class="font-mono text-cyan-300 font-bold" id="bar-nina-val">-25% a -45% abaixo da média</span>
+                </div>
+                <div class="w-full h-4 rounded-full bg-ocean-950 overflow-hidden border border-ocean-800 p-0.5">
+                  <div id="bar-nina" class="bar-transition h-full rounded-full bg-gradient-to-r from-sky-500 to-cyan-400" style="width: 35%;"></div>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-1.5" id="bar-nina-desc">
+                  Estiagens acentuadas no verão com perdas diretas na safra de soja e milho.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8 pt-4 border-t border-ocean-800/80 flex items-center justify-between text-xs text-slate-400">
+            <span>Variabilidade histórica acumulada</span>
+            <span class="text-cyan-400 font-mono">1980 — 2024</span>
+          </div>
+        </div>
+
+        <!-- Cartão de Impactos Práticos & Vulnerabilidades -->
+        <div class="lg:col-span-5 glass-panel rounded-3xl p-6 sm:p-8 flex flex-col justify-between">
+          <div>
+            <h4 class="text-base font-bold text-white flex items-center gap-2 mb-4">
+              <i data-lucide="shield-alert" class="w-4 h-4 text-amber-400"></i>
+              Setores Mais Impactados nesta Região
+            </h4>
+
+            <div class="space-y-3.5 text-xs text-slate-300" id="reg-setores">
+              <div class="p-3.5 rounded-2xl bg-ocean-900/90 border border-ocean-700/60">
+                <strong class="text-white block mb-0.5 font-bold flex items-center gap-1.5">
+                  🌾 Agronegócio & Grãos
+                </strong>
+                <p class="text-slate-300 leading-relaxed" id="setor-agro">
+                  Altamente vulnerável a estiagens severas de verão na La Niña e a excesso de umidade na colheita sob El Niño.
+                </p>
+              </div>
+
+              <div class="p-3.5 rounded-2xl bg-ocean-900/90 border border-ocean-700/60">
+                <strong class="text-white block mb-0.5 font-bold flex items-center gap-1.5">
+                  ⚡ Energia & Hidrologia
+                </strong>
+                <p class="text-slate-300 leading-relaxed" id="setor-energia">
+                  Reservatórios das usinas da Bacia do Paraná e Uruguai enchem rapidamente no El Niño e operam em baixa na La Niña.
+                </p>
+              </div>
+
+              <div class="p-3.5 rounded-2xl bg-ocean-900/90 border border-ocean-700/60">
+                <strong class="text-white block mb-0.5 font-bold flex items-center gap-1.5">
+                  🏙️ Defesa Civil Urbana
+                </strong>
+                <p class="text-slate-300 leading-relaxed" id="setor-cidades">
+                  Risco elevado de inundações ribeirinhas e deslizamentos em encostas durante os períodos chuvosos de El Niño.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-ocean-800/80">
+            <button onclick="window.location.href='brasil-clima-em-movimento.html'" class="w-full py-2.5 rounded-xl bg-emerald-600/30 hover:bg-emerald-600 text-emerald-200 hover:text-white font-bold text-xs uppercase tracking-wider transition border border-emerald-500/40 flex items-center justify-center gap-2">
+              <span>Abrir Mapa Interativo do Brasil</span>
+              <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- BLOCO 3: DADOS HISTÓRICOS & LINHA DO TEMPO (OPÇÃO 2)     -->
+    <!-- ======================================================== -->
+    <section id="bloco-historico" class="mb-20 scroll-mt-24">
+      <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+        <div>
+          <h2 class="text-xl sm:text-2xl font-black text-white flex items-center gap-2.5">
+            <span class="p-2 rounded-xl bg-orange-600/20 text-orange-400 border border-orange-500/30">
+              <i data-lucide="clock" class="w-5 h-5"></i>
+            </span>
+            Séries Históricas: Os Grandes Episódios do ENOS
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-400 mt-1">
+            Revisão cronológica dos eventos de anomalia extrema que reconfiguraram o clima do planeta.
+          </p>
+        </div>
+        <div class="text-xs font-mono text-orange-400 bg-ocean-950 px-3 py-1.5 rounded-lg border border-orange-500/30">
+          Série ONI (NOAA)
+        </div>
+      </div>
+
+      <!-- Grid de Eventos Históricos Marcantes -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        
+        <!-- Evento 1 -->
+        <div class="glass-panel rounded-3xl p-6 border-l-4 border-l-orange-500 hover:border-orange-400/80 transition group">
+          <div class="flex items-center justify-between mb-3">
+            <span class="px-2.5 py-1 rounded-md bg-orange-950 text-orange-400 font-mono text-xs font-bold border border-orange-500/30">
+              1997 — 1998
+            </span>
+            <span class="text-xs text-rose-400 font-bold font-mono">+2,4 °C (Super)</span>
+          </div>
+          <h4 class="text-base font-extrabold text-white group-hover:text-orange-300 transition-colors">
+            🔥 O Super El Niño do Século
+          </h4>
+          <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+            Um dos episódios mais potentes do século XX. Seca recorde na Indonésia com queimadas florestais massivas e inundações devastadoras no sul do Brasil.
+          </p>
+        </div>
+
+        <!-- Evento 2 -->
+        <div class="glass-panel rounded-3xl p-6 border-l-4 border-l-cyan-400 hover:border-cyan-300 transition group">
+          <div class="flex items-center justify-between mb-3">
+            <span class="px-2.5 py-1 rounded-md bg-cyan-950 text-cyan-400 font-mono text-xs font-bold border border-cyan-500/30">
+              1998 — 2000
+            </span>
+            <span class="text-xs text-cyan-300 font-bold font-mono">-1,9 °C (Forte)</span>
+          </div>
+          <h4 class="text-base font-extrabold text-white group-hover:text-cyan-300 transition-colors">
+            ❄️ A Grande La Niña Pós-98
+          </h4>
+          <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+            Reação rápida e profunda após o pico de calor. Trouxe invernos com recordes de estiagem no Sul do Brasil e tempestades tropicais ampliadas no Atlântico.
+          </p>
+        </div>
+
+        <!-- Evento 3 -->
+        <div class="glass-panel rounded-3xl p-6 border-l-4 border-l-orange-500 hover:border-orange-400/80 transition group">
+          <div class="flex items-center justify-between mb-3">
+            <span class="px-2.5 py-1 rounded-md bg-orange-950 text-orange-400 font-mono text-xs font-bold border border-orange-500/30">
+              2015 — 2016
+            </span>
+            <span class="text-xs text-rose-400 font-bold font-mono">+2,6 °C (Extremo)</span>
+          </div>
+          <h4 class="text-base font-extrabold text-white group-hover:text-orange-300 transition-colors">
+            🔥 Super El Niño Godzilla
+          </h4>
+          <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+            Recorde absoluto no índice Niño 3.4. Provocou branqueamento em massa de corais em escala global e secas extremas na Bacia Amazônica.
+          </p>
+        </div>
+
+        <!-- Evento 4 -->
+        <div class="glass-panel rounded-3xl p-6 border-l-4 border-l-cyan-400 hover:border-cyan-300 transition group">
+          <div class="flex items-center justify-between mb-3">
+            <span class="px-2.5 py-1 rounded-md bg-cyan-950 text-cyan-400 font-mono text-xs font-bold border border-cyan-500/30">
+              2020 — 2023
+            </span>
+            <span class="text-xs text-cyan-300 font-bold font-mono">Tripla (Três Anos)</span>
+          </div>
+          <h4 class="text-base font-extrabold text-white group-hover:text-cyan-300 transition-colors">
+            ❄️ La Niña "Triple-Dip"
+          </h4>
+          <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+            Raríssimo evento contínuo de 3 anos consecutivos no século XXI. Seca crônica no Rio Grande do Sul e chuvas intensas e persistentes no Leste do Nordeste.
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Gráfico Ilustrativo de Anomalias do Índice ONI (Visual em SVG) -->
+      <div class="glass-panel rounded-3xl p-6 sm:p-8">
+        <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+          <h4 class="text-sm font-bold text-white flex items-center gap-2">
+            <i data-lucide="trending-up" class="w-4 h-4 text-cyan-400"></i>
+            Representação Conceitual do Índice Oceânico Niño (ONI) — 1995 a 2024
+          </h4>
+          <div class="flex items-center gap-4 text-xs font-mono">
+            <span class="flex items-center gap-1.5 text-orange-400">
+              <span class="w-2.5 h-2.5 rounded-full bg-orange-500 inline-block"></span> Fase Quente (+0.5°C)
+            </span>
+            <span class="flex items-center gap-1.5 text-cyan-400">
+              <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 inline-block"></span> Fase Fria (-0.5°C)
+            </span>
+          </div>
+        </div>
+
+        <!-- SVG Gráfico Simulado do ONI -->
+        <div class="w-full overflow-x-auto py-2">
+          <svg class="w-full min-w-[700px] h-48" viewBox="0 0 800 200" fill="none">
+            <!-- Linhas de Referência -->
+            <line x1="40" y1="30" x2="780" y2="30" stroke="#ea580c" stroke-dasharray="3 3" stroke-width="0.7" opacity="0.6"/>
+            <text x="785" y="34" fill="#ea580c" font-size="9" font-family="monospace">+2.0°C</text>
+            
+            <line x1="40" y1="70" x2="780" y2="70" stroke="#f97316" stroke-dasharray="2 2" stroke-width="0.7" opacity="0.4"/>
+            <text x="785" y="74" fill="#f97316" font-size="9" font-family="monospace">+0.5°C (Limiar)</text>
+            
+            <!-- Linha Zero / Média -->
+            <line x1="40" y1="100" x2="780" y2="100" stroke="#64748b" stroke-width="1.2"/>
+            <text x="785" y="103" fill="#94a3b8" font-size="9" font-family="monospace">0.0°C</text>
+            
+            <line x1="40" y1="130" x2="780" y2="130" stroke="#38bdf8" stroke-dasharray="2 2" stroke-width="0.7" opacity="0.4"/>
+            <text x="785" y="134" fill="#38bdf8" font-size="9" font-family="monospace">-0.5°C (Limiar)</text>
+            
+            <line x1="40" y1="170" x2="780" y2="170" stroke="#06b6d4" stroke-dasharray="3 3" stroke-width="0.7" opacity="0.6"/>
+            <text x="785" y="174" fill="#06b6d4" font-size="9" font-family="monospace">-2.0°C</text>
+
+            <!-- Curva Ondulatória Histórica -->
+            <path d="M 40 100 
+                     C 70 90, 80 40, 110 35 
+                     C 130 35, 140 120, 160 160 
+                     C 180 180, 200 150, 220 120 
+                     C 240 90, 260 70, 280 85 
+                     C 300 100, 320 130, 350 145 
+                     C 380 160, 410 80, 440 70 
+                     C 470 60, 490 120, 520 130 
+                     C 550 140, 580 40, 610 32 
+                     C 630 28, 650 110, 680 150 
+                     C 710 175, 730 165, 750 140 
+                     C 760 125, 770 70, 780 60" 
+                  stroke="url(#gradient-line)" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+            <!-- Destaques dos Grandes Picos -->
+            <!-- 1997/98 -->
+            <circle cx="110" cy="35" r="5" fill="#ea580c" stroke="#fff" stroke-width="1.5"/>
+            <text x="110" y="24" fill="#fb923c" font-size="10" font-weight="bold" text-anchor="middle" font-family="monospace">1997 (+2.4)</text>
+
+            <!-- 2015/16 -->
+            <circle cx="610" cy="32" r="5" fill="#ea580c" stroke="#fff" stroke-width="1.5"/>
+            <text x="610" y="22" fill="#fb923c" font-size="10" font-weight="bold" text-anchor="middle" font-family="monospace">2015 (+2.6)</text>
+
+            <!-- La Niña Tripla -->
+            <circle cx="710" cy="170" r="5" fill="#06b6d4" stroke="#fff" stroke-width="1.5"/>
+            <text x="710" y="190" fill="#67e8f9" font-size="10" font-weight="bold" text-anchor="middle" font-family="monospace">2020-2023</text>
+
+            <!-- Gradiente da Linha -->
+            <defs>
+              <linearGradient id="gradient-line" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#38bdf8"/>
+                <stop offset="12%" stop-color="#ea580c"/>
+                <stop offset="22%" stop-color="#06b6d4"/>
+                <stop offset="45%" stop-color="#38bdf8"/>
+                <stop offset="70%" stop-color="#ea580c"/>
+                <stop offset="88%" stop-color="#06b6d4"/>
+                <stop offset="100%" stop-color="#f97316"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <p class="text-[11px] text-slate-400 mt-2 text-center">
+          * Representação didática sintetizada baseada nos relatórios do Climate Prediction Center (CPC / NWS / NOAA).
+        </p>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- BLOCO 4: REDES GLOBAIS DE MONITORAMENTO CIENTÍFICO       -->
+    <!-- ======================================================== -->
+    <section id="bloco-redes" class="mb-16 scroll-mt-24">
+      <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+        <div>
+          <h2 class="text-xl sm:text-2xl font-black text-white flex items-center gap-2.5">
+            <span class="p-2 rounded-xl bg-sky-600/20 text-sky-400 border border-sky-500/30">
+              <i data-lucide="satellite" class="w-5 h-5"></i>
+            </span>
+            Como a Ciência Monitora o Oceano Pacífico
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-400 mt-1">
+            A infraestrutura tecnológica global que fornece dados em tempo real para os modelos climáticos.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Rede 1 -->
+        <div class="glass-panel rounded-3xl p-6">
+          <div class="w-10 h-10 rounded-2xl bg-cyan-600/20 border border-cyan-400/30 flex items-center justify-center text-cyan-300 mb-4">
+            <i data-lucide="anchor" class="w-5 h-5"></i>
+          </div>
+          <h4 class="text-base font-bold text-white mb-2">Rede TAO / TRITON</h4>
+          <p class="text-xs text-slate-300 leading-relaxed mb-4">
+            Conjunto de aproximadamente 55 a 70 boias oceânicas fundeadas estrategicamente em todo o Pacífico tropical. Medem ventos superficiais, temperatura do ar, umidade e a temperatura da água até 500 metros de profundidade.
+          </p>
+          <span class="text-[11px] font-mono text-cyan-400 font-bold bg-ocean-950 px-2.5 py-1 rounded border border-cyan-500/30">
+            Termometria Subsuperficial
+          </span>
+        </div>
+
+        <!-- Rede 2 -->
+        <div class="glass-panel rounded-3xl p-6">
+          <div class="w-10 h-10 rounded-2xl bg-sky-600/20 border border-sky-400/30 flex items-center justify-center text-sky-300 mb-4">
+            <i data-lucide="radio" class="w-5 h-5"></i>
+          </div>
+          <h4 class="text-base font-bold text-white mb-2">Altimetria por Satélites</h4>
+          <p class="text-xs text-slate-300 leading-relaxed mb-4">
+            Satélites como Jason-3 e Sentinel-6 medem a altura da superfície do mar com precisão milimétrica. A água quente se expande termicamente (fica mais alta), permitindo mapear ondas Kelvin oceânicas semanas antes dos impactos no clima.
+          </p>
+          <span class="text-[11px] font-mono text-sky-400 font-bold bg-ocean-950 px-2.5 py-1 rounded border border-sky-500/30">
+            Radar Altimétrico Orbital
+          </span>
+        </div>
+
+        <!-- Rede 3 -->
+        <div class="glass-panel rounded-3xl p-6">
+          <div class="w-10 h-10 rounded-2xl bg-emerald-600/20 border border-emerald-400/30 flex items-center justify-center text-emerald-300 mb-4">
+            <i data-lucide="compass" class="w-5 h-5"></i>
+          </div>
+          <h4 class="text-base font-bold text-white mb-2">Frota de Flutuadores Argo</h4>
+          <p class="text-xs text-slate-300 leading-relaxed mb-4">
+            Quase 4.000 perfis robóticos autônomos que mergulham até 2.000 metros de profundidade a cada 10 dias, medindo salinidade e temperatura global antes de subir à superfície para transmitir os dados via satélite.
+          </p>
+          <span class="text-[11px] font-mono text-emerald-400 font-bold bg-ocean-950 px-2.5 py-1 rounded border border-emerald-500/30">
+            Perfis Verticais Globais
+          </span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- NAVEGAÇÃO SEQUENCIAL DE RODAPÉ                           -->
+    <!-- ======================================================== -->
+    <section class="mt-14 text-center bg-gradient-to-b from-ocean-900/60 to-ocean-950/90 p-8 sm:p-10 rounded-3xl border border-ocean-800/80">
+      <h3 class="text-lg sm:text-xl font-bold text-white mb-2">
+        Continue Explorando o Sistema Oceano-Atmosfera
+      </h3>
+      <p class="text-xs sm:text-sm text-slate-300 max-w-xl mx-auto mb-6">
+        Navegue pelas páginas do projeto para ver as simulações e os modelos conceituais completos.
+      </p>
+
+      <div class="flex items-center justify-center gap-4 flex-wrap">
+        <button onclick="window.location.href='clima_em_movimento_el_ni_no.html'" class="px-6 py-3 rounded-2xl bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-bold text-xs uppercase tracking-wider transition shadow-glow-orange flex items-center gap-2">
+          <i data-lucide="flame" class="w-4 h-4"></i> Rever El Niño
+        </button>
+        <button onclick="window.location.href='la_nina_clima_em_movimento.html'" class="px-6 py-3 rounded-2xl bg-gradient-to-r from-sky-600 to-cyan-600 hover:from-sky-500 hover:to-cyan-500 text-white font-bold text-xs uppercase tracking-wider transition shadow-glow-cyan flex items-center gap-2">
+          <i data-lucide="snowflake" class="w-4 h-4"></i> Rever La Niña
+        </button>
+        <button onclick="window.location.href='brasil-clima-em-movimento.html'" class="px-6 py-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs uppercase tracking-wider transition shadow-glow-emerald flex items-center gap-2">
+          <i data-lucide="map-pin" class="w-4 h-4"></i> Impactos no Brasil
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- RODAPÉ GLOBAL -->
+  <footer class="border-t border-ocean-800/80 bg-ocean-950/80 py-6 text-center text-xs text-slate-500">
+    <p>Projeto Clima em Movimento • Observatório Educacional Oceano-Atmosfera</p>
+  </footer>
+
+  <!-- Toast Notificação Desafio -->
+  <div id="toast-desafio" class="fixed bottom-6 right-6 z-50 bg-ocean-900 border border-cyan-500/50 text-white text-xs font-semibold px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 transform translate-y-24 opacity-0 transition-all duration-300">
+    <i data-lucide="gamepad-2" class="w-4 h-4 text-cyan-400"></i>
+    <span>Módulo do Desafio em preparação!</span>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- SCRIPTS DA PÁGINA                          -->
+  <!-- ========================================== -->
+  <script>
+    lucide.createIcons();
+
+    // Base de Dados Estatística das 5 Regiões
+    const dadosRegioes = {
+      'sul': {
+        tag: 'REGIÃO SUL (RS, SC, PR)',
+        titulo: 'Desvios Históricos de Precipitação Pluviométrica no Sul',
+        ninoVal: '+35% a +60% acima da média',
+        ninoWidth: '85%',
+        ninoDesc: 'Temporais frequentes e risco severo de cheias nos vales dos rios Jacuí, Taquari e Uruguai.',
+        ninaVal: '-25% a -45% abaixo da média',
+        ninaWidth: '35%',
+        ninaDesc: 'Estiagens acentuadas no verão com perdas diretas na safra de soja e milho.',
+        agro: 'Altamente vulnerável a estiagens severas de verão na La Niña e a excesso de umidade na colheita sob El Niño.',
+        energia: 'Reservatórios das usinas da Bacia do Paraná e Uruguai enchem rapidamente no El Niño e operam em baixa na La Niña.',
+        cidades: 'Risco elevado de inundações ribeirinhas e deslizamentos em encostas durante os períodos chuvosos de El Niño.'
+      },
+      'sudeste': {
+        tag: 'REGIÃO SUDESTE (SP, RJ, MG, ES)',
+        titulo: 'Comportamento da Precipitação e Ondas de Calor no Sudeste',
+        ninoVal: '+1,5 °C a +2,5 °C no verão / Chuvas Irregulares',
+        ninoWidth: '70%',
+        ninoDesc: 'Aumento significativo nas temperaturas médias e bloqueios atmosféricos com frentes frias retidas no Sul.',
+        ninaVal: 'Entrada Facilitada de Frentes Frias / Chuva Frequente',
+        ninaWidth: '65%',
+        ninaDesc: 'Corredores de umidade (ZCAS) ativos com chuva persistente e temperaturas mais amenas no verão.',
+        agro: 'Sensível a estresse térmico no café e cana durante verões de El Niño prolongado.',
+        energia: 'Regime das cabeceiras do Rio Grande e Paranaíba crucial para o Sistema Interligado Nacional (SIN).',
+        cidades: 'Altas temperaturas e demandas extremas de energia em ondas de calor no El Niño.'
+      },
+      'nordeste': {
+        tag: 'REGIÃO NORDESTE (Semiárido e Leste)',
+        titulo: 'Impacto nos Volumes Hídricos e Secas no Nordeste',
+        ninoVal: '-40% a -60% na quadra chuvosa do Sertão',
+        ninoWidth: '30%',
+        ninoDesc: 'Seca intensa e prolongada no semiárido; a Zona de Convergência Intertropical (ZCIT) fica impedida de descer.',
+        ninaVal: '+30% a +50% no Semiárido e Costa Leste',
+        ninaWidth: '80%',
+        ninaDesc: 'ZCIT deslocada mais ao sul garantindo recarga dos açudes sertanejos e quadra chuvosa abundante.',
+        agro: 'Agricultura de sequeiro sofre perdas severas no El Niño; La Niña propicia recuperação da pecuária e lavouras.',
+        energia: 'Queda de vazão no Rio São Francisco no El Niño com impacto nas hidrelétricas de Sobradinho e Xingó.',
+        cidades: 'Agravamento do desabastecimento hídrico em cidades do interior no El Niño.'
+      },
+      'norte': {
+        tag: 'REGIÃO NORTE (Amazônia)',
+        titulo: 'Regime Hidrológico da Bacia Amazônica',
+        ninoVal: '-30% a -55% de precipitação e seca nos rios',
+        ninoWidth: '25%',
+        ninoDesc: 'Rios descem a níveis históricos (secas na Amazônia) e o risco de incêndios florestais explode.',
+        ninaVal: 'Volumes de Chuva Normais a Elevados',
+        ninaWidth: '75%',
+        ninaDesc: 'Manutenção da cheia normal dos grandes afluentes amazônicos e redução significativa dos focos de calor.',
+        agro: 'Navegação fluvial paralisada pelo baixo nível dos rios durante El Niño, isolando comunidades ribeirinhas.',
+        energia: 'Usinas de Belo Monte, Santo Antônio e Jirau sofrem com vazões mínimas durante o El Niño.',
+        cidades: 'Fumaça de queimadas e isolamento logístico nos grandes municípios amazônicos.'
+      },
+      'centro-oeste': {
+        tag: 'REGIÃO CENTRO-OESTE (MT, MS, GO, DF)',
+        titulo: 'Dinâmica das Chuvas de Verão no Centro-Oeste',
+        ninoVal: 'Temperaturas elevadas e chuvas mais esparsas',
+        ninoWidth: '60%',
+        ninoDesc: 'Calor acima da média histórica e irregularidade no início do plantio das safras de verão.',
+        ninaVal: 'Distribuição regular das chuvas e menos calor extremo',
+        ninaWidth: '68%',
+        ninaDesc: 'Padrão favorável de chuvas de verão, embora o Pantanal possa registrar estiagens no sul do MS.',
+        agro: 'Maior produtor de grãos do país, sensível a atrasos no plantio quando o El Niño posterga o início das chuvas.',
+        energia: 'Bacias formadoras do Rio Paraguai e Paraná com respostas hídricas moderadas.',
+        cidades: 'Altas taxas de evapotranspiração e ar seco no outono/inverno.'
+      }
+    };
+
+    function selecionarRegiao(regiaoKey) {
+      const dados = dadosRegioes[regiaoKey];
+      if (!dados) return;
+
+      // Atualiza botões
+      document.querySelectorAll('.btn-reg').forEach(b => {
+        b.className = 'btn-reg px-4 py-2.5 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 shrink-0 bg-ocean-850 text-slate-300 hover:text-white hover:bg-ocean-800 border border-ocean-700/60';
+      });
+      const btnAtivo = document.getElementById('btn-reg-' + regiaoKey);
+      if (btnAtivo) {
+        btnAtivo.className = 'btn-reg px-4 py-2.5 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 shrink-0 bg-emerald-500 text-ocean-950 shadow-glow-emerald';
+      }
+
+      // Atualiza textos
+      document.getElementById('reg-tag').innerText = dados.tag;
+      document.getElementById('reg-titulo').innerText = dados.titulo;
+      document.getElementById('bar-nino-val').innerText = dados.ninoVal;
+      document.getElementById('bar-nino-desc').innerText = dados.ninoDesc;
+      document.getElementById('bar-nino').style.width = dados.ninoWidth;
+
+      document.getElementById('bar-nina-val').innerText = dados.ninaVal;
+      document.getElementById('bar-nina-desc').innerText = dados.ninaDesc;
+      document.getElementById('bar-nina').style.width = dados.ninaWidth;
+
+      document.getElementById('setor-agro').innerText = dados.agro;
+      document.getElementById('setor-energia').innerText = dados.energia;
+      document.getElementById('setor-cidades').innerText = dados.cidades;
+    }
+
+    // Leitura de parâmetros de URL para abrir já filtrado (ex: ?regiao=nordeste)
+    window.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const reg = urlParams.get('regiao') || urlParams.get('estado');
+      if (reg && dadosRegioes[reg.toLowerCase()]) {
+        selecionarRegiao(reg.toLowerCase());
+      }
+    });
+
+    function showDesafioToast() {
+      const t = document.getElementById('toast-desafio');
+      t.classList.remove('translate-y-24', 'opacity-0');
+      t.classList.add('translate-y-0', 'opacity-100');
+      setTimeout(() => {
+        t.classList.add('translate-y-24', 'opacity-0');
+        t.classList.remove('translate-y-0', 'opacity-100');
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

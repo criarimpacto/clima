@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CLIMA EM MOVIMENTO - O Fenômeno (Simulador do Pacífico)</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap');
+
+    :root {
+      color-scheme: dark;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #020713;
+      color: #f1f5f9;
+      overflow-x: hidden;
+    }
+
+    /* Glassmorphism visual tokens */
+    .glass-nav {
+      background: rgba(2, 8, 22, 0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(56, 189, 248, 0.16);
+    }
+
+    .glass-card {
+      background: rgba(4, 13, 33, 0.78);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+    }
+
+    .glass-card-subtle {
+      background: rgba(3, 10, 26, 0.85);
+      border: 1px solid rgba(56, 189, 248, 0.12);
+    }
+
+    /* Parallax viewport and 3D stacking */
+    .parallax-viewport {
+      perspective: 1200px;
+      transform-style: preserve-3d;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .parallax-layer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      transition: transform 0.1s cubic-bezier(0.2, 0, 0.2, 1);
+      will-change: transform;
+    }
+
+    /* Wind particle & vector flow animations */
+    @keyframes windDriftWest {
+      0% { transform: translateX(45px); opacity: 0; }
+      20% { opacity: 1; }
+      80% { opacity: 1; }
+      100% { transform: translateX(-45px); opacity: 0; }
+    }
+
+    @keyframes windDriftEast {
+      0% { transform: translateX(-45px); opacity: 0; }
+      20% { opacity: 1; }
+      80% { opacity: 1; }
+      100% { transform: translateX(45px); opacity: 0; }
+    }
+
+    .anim-trade-west {
+      animation: windDriftWest 1.3s infinite cubic-bezier(0.4, 0, 0.6, 1);
+    }
+
+    .anim-trade-east {
+      animation: windDriftEast 1.3s infinite cubic-bezier(0.4, 0, 0.6, 1);
+    }
+
+    /* Cloud floating kinetics */
+    @keyframes cloudDrift1 {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-8px) scale(1.03); }
+    }
+
+    @keyframes cloudDrift2 {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-6px) scale(0.98); }
+    }
+
+    .cloud-kinesis-west {
+      animation: cloudDrift1 5.5s ease-in-out infinite;
+    }
+
+    .cloud-kinesis-east {
+      animation: cloudDrift2 6.5s ease-in-out infinite;
+    }
+
+    /* Custom range sliders styling */
+    input[type=range] {
+      -webkit-appearance: none;
+      appearance: none;
+      background: transparent;
+      width: 100%;
+    }
+
+    input[type=range]:focus {
+      outline: none;
+    }
+
+    input[type=range]::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 10px;
+      cursor: pointer;
+      border-radius: 9999px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.7);
+    }
+
+    #slider-nino::-webkit-slider-runnable-track {
+      background: linear-gradient(90deg, #0f274a 0%, #9a3412 55%, #ea580c 100%);
+    }
+
+    #slider-nina::-webkit-slider-runnable-track {
+      background: linear-gradient(90deg, #0f274a 0%, #0369a1 55%, #38bdf8 100%);
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      height: 24px;
+      width: 24px;
+      border-radius: 50%;
+      background: #f0f9ff;
+      border: 3px solid #38bdf8;
+      cursor: pointer;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.95);
+      margin-top: -7px;
+      transition: transform 0.15s ease;
+    }
+
+    #slider-nino::-webkit-slider-thumb {
+      border-color: #fb923c;
+      box-shadow: 0 0 16px rgba(251, 146, 60, 0.95);
+    }
+
+    input[type=range]::-webkit-slider-thumb:hover {
+      transform: scale(1.18);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-cyan-500 selection:text-white relative bg-[#020713]">
+
+  <!-- Atmospheric ambient glows in canvas background -->
+  <div class="fixed top-0 right-0 w-[780px] h-[550px] bg-gradient-to-b from-sky-500/10 via-cyan-600/5 to-transparent rounded-full blur-[150px] pointer-events-none -z-10"></div>
+  <div class="fixed bottom-0 left-0 w-[820px] h-[650px] bg-gradient-to-t from-blue-700/10 via-sky-800/5 to-transparent rounded-full blur-[170px] pointer-events-none -z-10"></div>
+
+  <!-- 1. BARRA DE NAVEGAÇÃO GLOBAL -->
+  <header class="cm-header">
+    <style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+.cm-header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
+  padding:12px 24px;background:rgba(3,8,22,.88);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(255,255,255,.08);font-family:'Plus Jakarta Sans',sans-serif;box-sizing:border-box;width:100%}
+.cm-header *{box-sizing:border-box}
+@media(min-width:1024px){.cm-header{padding:12px 48px}}
+.cm-logo{display:flex;align-items:center;gap:12px;cursor:pointer;text-decoration:none}
+.cm-logo-ic{width:40px;height:40px;border-radius:9999px;background:rgba(8,145,178,.25);border:1px solid rgba(34,211,238,.4);
+  display:flex;align-items:center;justify-content:center;color:#67e8f9;transition:transform .15s}
+.cm-logo:hover .cm-logo-ic{transform:scale(1.05)}
+.cm-logo-ic i,.cm-logo-ic svg{width:20px;height:20px}
+.cm-logo h1{margin:0;font-size:14px;font-weight:800;letter-spacing:.05em;line-height:1;color:#fff}
+.cm-logo p{margin:2px 0 0;font-size:10px;font-weight:400;letter-spacing:.025em;color:rgba(103,232,249,.8)}
+@media(min-width:640px){.cm-logo h1{font-size:16px}.cm-logo p{font-size:11px}}
+.cm-nav{display:none;align-items:center;gap:6px;font-size:12px;font-weight:600}
+@media(min-width:1280px){.cm-nav{display:flex}}
+.cm-btn{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:9999px;border:1px solid transparent;
+  background:transparent;color:#cbd5e1;font:inherit;line-height:1rem;cursor:pointer;transition:all .15s}
+.cm-btn:hover{background:rgba(30,41,59,.6);color:var(--hv)}
+.cm-btn i,.cm-btn svg{width:14px;height:14px;flex-shrink:0}
+.cm-ic-orange{color:#fb923c}.cm-ic-cyan{color:#67e8f9}
+.cm-btn.cm-active{background:rgba(6,182,212,.2);color:#67e8f9;border-color:rgba(34,211,238,.4)}
+.cm-btn.cm-active:hover{color:#67e8f9}
+</style>
+    <div class="cm-logo" onclick="window.location.href='gemini-pagina-inicial.html'">
+      <div class="cm-logo-ic"><i data-lucide="globe"></i></div>
+      <div>
+        <h1>CLIMA EM MOVIMENTO</h1>
+        <p>Quando o oceano muda, o planeta responde.</p>
+      </div>
+    </div>
+    <nav class="cm-nav">
+      <button class="cm-btn" onclick="window.location.href='gemini-pagina-inicial.html'" style="--hv:#ffffff"><i data-lucide="home"></i> Início</button>
+      <button class="cm-btn cm-active"><i data-lucide="waves"></i> O Fenômeno</button>
+      <button class="cm-btn" onclick="window.location.href='clima_em_movimento_el_ni_no.html'" style="--hv:#fb923c"><i data-lucide="flame" class="cm-ic-orange"></i> El Niño</button>
+      <button class="cm-btn" onclick="window.location.href='la_nina_clima_em_movimento.html'" style="--hv:#67e8f9"><i data-lucide="snowflake" class="cm-ic-cyan"></i> La Niña</button>
+      <button class="cm-btn" onclick="window.location.href='brasil-clima-em-movimento.html'" style="--hv:#34d399"><i data-lucide="map-pin"></i> Brasil</button>
+      <button class="cm-btn" onclick="window.location.href='dados-clima-em-movimento.html'" style="--hv:#ffffff"><i data-lucide="bar-chart-2"></i> Dados</button>
+      <button class="cm-btn" onclick="window.location.href='desafio-clima-em-movimento.html'" style="--hv:#ffffff"><i data-lucide="gamepad-2"></i> Desafio</button>
+    </nav>
+    <script>(function(){function go(){lucide.createIcons();}if(window.lucide){go();}else{var s=document.createElement('script');s.src='https://unpkg.com/lucide@latest';s.onload=go;document.head.appendChild(s);}})();</script>
+  </header>
+
+  <!-- 2. CABEÇALHO DA PÁGINA ("O FENÔMENO") -->
+  <main class="flex-1 px-4 sm:px-6 lg:px-12 pt-6 pb-12 max-w-[1440px] mx-auto w-full">
+    
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-7">
+      <div class="flex items-center gap-4">
+        <div class="w-16 h-16 rounded-2xl bg-cyan-600/20 border border-cyan-400/40 flex items-center justify-center text-cyan-300 shrink-0 shadow-lg shadow-cyan-500/20">
+          <i data-lucide="waves" class="w-9 h-9"></i>
+        </div>
+        <div>
+          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white flex items-center gap-2">
+            O FENÔMENO
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-300 font-light mt-0.5">
+            Tudo começa com uma interação entre o oceano e a atmosfera.
+          </p>
+        </div>
+      </div>
+
+      <div class="max-w-lg bg-slate-900/70 border border-slate-700/50 rounded-2xl p-4 text-xs sm:text-sm text-slate-300 leading-relaxed shadow-xl backdrop-blur-md">
+        <span class="text-cyan-300 font-semibold">O Oceano Pacífico equatorial</span> é o centro desse sistema. A temperatura da água, os ventos e a circulação atmosférica trabalham juntos e podem gerar o <span class="text-orange-400 font-semibold">El Niño</span> e a <span class="text-cyan-300 font-semibold">La Niña</span>.
+      </div>
+    </div>
+
+    <!-- 3. SIMULADOR DO PACÍFICO (PALCO PARALLAX COM A IMAGEM LIMPA DE FUNDO) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      
+      <!-- LADO ESQUERDO: DIORAMA PARALLAX COM NUVENS, SETAS E TERMAL POR CIMA -->
+      <div class="lg:col-span-8 flex flex-col gap-4">
+        
+        <div class="glass-card rounded-3xl p-4 sm:p-5 border border-cyan-500/25 relative overflow-hidden shadow-2xl">
+          
+          <!-- Top bar: Estado Dinâmico e Seletor de Arquivo -->
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-3 z-40 relative">
+            <div id="badge-estado" class="text-xs sm:text-sm font-extrabold tracking-wider px-4 py-1.5 rounded-full bg-cyan-900/80 border border-cyan-400/50 text-cyan-200 uppercase shadow-lg shadow-cyan-950/60 flex items-center gap-2 transition-all duration-300">
+              <span id="badge-dot" class="w-2.5 h-2.5 rounded-full bg-cyan-300 animate-pulse"></span>
+              <span id="badge-estado-text">O PACÍFICO EM CONDIÇÕES NORMAIS</span>
+            </div>
+
+            <div class="flex items-center gap-2.5 text-xs">
+              <span class="hidden md:flex items-center gap-1.5 text-cyan-300/80 text-[11px] bg-cyan-950/40 border border-cyan-500/30 px-3 py-1 rounded-full">
+                <i data-lucide="move" class="w-3 h-3 text-cyan-400"></i> Parallax ativo: Mova o mouse ou toque
+              </span>
+
+              <!-- Seletor opcional para carregar o arquivo direto do disco local -->
+              <label class="cursor-pointer text-[11px] text-cyan-300/90 hover:text-cyan-100 bg-slate-900/80 hover:bg-slate-800 border border-cyan-500/40 px-3 py-1 rounded-full flex items-center gap-1.5 transition">
+                <i data-lucide="image" class="w-3.5 h-3.5"></i>
+                <span id="img-upload-label">Carregar 'Imagem Fundo pg 2.jpeg'</span>
+                <input type="file" id="image-file-input" accept="image/*" class="hidden" onchange="loadUserDioramaImage(event)" />
+              </label>
+            </div>
+          </div>
+
+          <!-- PALCO PARALLAX MULTI-CAMADAS COM A IMAGEM COMO BASE LIMPA -->
+          <div id="parallax-stage" 
+               class="parallax-viewport relative w-full h-[470px] sm:h-[530px] rounded-2xl overflow-hidden bg-[#02091c] border border-cyan-950 flex items-center justify-center select-none shadow-2xl cursor-crosshair"
+               onmousemove="handleParallaxMove(event)"
+               onmouseleave="resetParallaxMove()"
+               ontouchmove="handleTouchParallax(event)">
+
+            <!-- CAMADA 0 (BASE FUNDO LIMPO): 'Imagem Fundo pg 2.jpeg' -->
+            <div id="layer-base" class="parallax-layer flex items-center justify-center scale-105">
+              <img id="diorama-bg-image" 
+                   src="Imagem Fundo pg 2.jpeg" 
+                   alt="Corte 3D do Oceano Pacífico"
+                   onerror="handleImageFallback(this)"
+                   class="w-full h-full object-cover object-center transition-transform duration-700 pointer-events-none" />
+
+              <!-- Fallback Vetorial Isométrico caso a imagem local ainda não esteja na mesma pasta -->
+              <div id="vector-diorama-fallback" class="absolute inset-0 w-full h-full hidden pointer-events-none">
+                <svg class="w-full h-full" viewBox="0 0 1100 650" preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="fallOceanGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stop-color="#ea580c" />
+                      <stop offset="28%" stop-color="#f97316" />
+                      <stop offset="55%" stop-color="#0284c7" />
+                      <stop offset="100%" stop-color="#0369a1" />
+                    </linearGradient>
+                    <linearGradient id="fallBasinSide" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stop-color="#033068" />
+                      <stop offset="100%" stop-color="#010e24" />
+                    </linearGradient>
+                  </defs>
+                  <rect width="1100" height="650" fill="#02091c" />
+                  <polygon points="40,430 1060,430 1060,570 40,570" fill="url(#fallBasinSide)" stroke="#0284c7" stroke-width="1.5" />
+                  <polygon points="40,300 170,320 170,430 40,430" fill="#14532d" />
+                  <polygon points="890,320 1060,290 1060,430 890,430" fill="#854d0e" />
+                  <polygon points="130,250 940,250 1060,430 40,430" fill="url(#fallOceanGrad)" opacity="0.95" />
+                </svg>
+              </div>
+            </div>
+
+            <!-- CAMADA 1: MÁSCARA TÉRMICA DINÂMICA (SOBRE A SUPERFÍCIE DO MAR) -->
+            <div id="dynamic-thermal-filter" class="parallax-layer mix-blend-color opacity-0 transition-opacity duration-700 z-10 pointer-events-none"></div>
+            <div id="dynamic-overlay-glow" class="parallax-layer opacity-0 transition-opacity duration-700 z-10 pointer-events-none"></div>
+
+            <!-- CAMADA 2: RESSURGÊNCIA DE HUMBOLDT E CORRENTES PROFUNDAS -->
+            <div id="layer-underwater" class="parallax-layer z-20 pointer-events-none">
+              <!-- Jatos verticais de Ressurgência na América do Sul -->
+              <div id="dynamic-upwelling-plume" class="absolute bottom-[16%] right-[16%] flex gap-3 text-cyan-300 drop-shadow-[0_0_12px_rgba(56,189,248,0.95)] transition-all duration-500">
+                <i data-lucide="arrow-up" class="w-7 h-7 animate-bounce stroke-[3]"></i>
+                <i data-lucide="arrow-up" class="w-8 h-8 animate-bounce stroke-[3] delay-100"></i>
+                <i data-lucide="arrow-up" class="w-7 h-7 animate-bounce stroke-[3] delay-200"></i>
+              </div>
+
+              <!-- Retorno profundo de correntes oceânicas -->
+              <div class="absolute bottom-[24%] left-[45%] flex items-center gap-4 text-cyan-400/40 text-[11px]">
+                <i data-lucide="arrow-right" class="w-4 h-4 animate-pulse"></i>
+                <i data-lucide="arrow-right" class="w-4 h-4 animate-pulse"></i>
+              </div>
+            </div>
+
+            <!-- CAMADA 3: VENTOS ALÍSIOS SUPERFICIAIS (SETAS ANIMADAS EM PARALLAX) -->
+            <div id="layer-surface-winds" class="parallax-layer z-25 pointer-events-none">
+              <div id="dynamic-trade-winds" class="absolute top-[32%] sm:top-[33%] left-[50%] transform -translate-x-1/2 flex items-center gap-5 text-cyan-300 drop-shadow-[0_0_10px_rgba(56,189,248,1)]">
+                <i data-lucide="arrow-left" class="w-7 h-7 sm:w-8 sm:h-8 anim-trade-west stroke-[3.5]"></i>
+                <i data-lucide="arrow-left" class="w-7 h-7 sm:w-8 sm:h-8 anim-trade-west stroke-[3.5]"></i>
+                <i data-lucide="arrow-left" class="w-7 h-7 sm:w-8 sm:h-8 anim-trade-west stroke-[3.5]"></i>
+                <i data-lucide="arrow-left" class="w-7 h-7 sm:w-8 sm:h-8 anim-trade-west stroke-[3.5]"></i>
+              </div>
+            </div>
+
+            <!-- CAMADA 4: CIRCULAÇÃO DE WALKER NA ALTA TROPOSFERA -->
+            <div id="layer-walker-circ" class="parallax-layer z-30 pointer-events-none">
+              <svg class="absolute top-2 inset-x-0 w-full h-24 overflow-visible" viewBox="0 0 1000 100" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="walkerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.8" />
+                    <stop offset="50%" stop-color="#7dd3fc" stop-opacity="1" />
+                    <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.8" />
+                  </linearGradient>
+                </defs>
+                <path id="walker-curve" d="M 330 65 Q 520 10 710 65" fill="none" stroke="url(#walkerGrad)" stroke-width="3" stroke-dasharray="8 6" class="animate-pulse" />
+              </svg>
+            </div>
+
+            <!-- CAMADA 5: NUVENS CONVECTIVAS VOLUMÉTRICAS EM PARALLAX -->
+            <div id="layer-clouds" class="parallax-layer z-35 pointer-events-none">
+              
+              <!-- Nuvem Convectiva sobre a Austrália / Indonésia (Oeste) -->
+              <div id="cloud-cell-west" class="absolute top-[8%] sm:top-[9%] left-[16%] sm:left-[22%] cloud-kinesis-west transition-all duration-700">
+                <div class="relative w-44 sm:w-56 h-28 sm:h-36">
+                  <div class="absolute inset-0 bg-gradient-to-t from-slate-200/35 via-white/40 to-white/10 rounded-full blur-xl filter drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]"></div>
+                  <div class="absolute top-2 left-6 w-28 h-20 bg-white/40 rounded-full blur-lg"></div>
+                  <div class="absolute top-6 left-16 w-32 h-24 bg-sky-100/35 rounded-full blur-lg"></div>
+                  <div class="absolute -bottom-1 left-14 text-cyan-200/90 flex gap-2">
+                    <i data-lucide="cloud-rain" class="w-8 h-8 text-cyan-300 drop-shadow-[0_0_8px_rgba(56,189,248,0.8)]"></i>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Nuvem Cumulus Menor sobre América do Sul (Leste) -->
+              <div id="cloud-cell-east" class="absolute top-[9%] sm:top-[10%] right-[16%] sm:right-[20%] cloud-kinesis-east opacity-50 transition-all duration-700">
+                <div class="relative w-36 sm:w-44 h-20 sm:h-28">
+                  <div class="absolute inset-0 bg-gradient-to-t from-slate-200/20 via-white/25 to-white/5 rounded-full blur-lg"></div>
+                  <div class="absolute top-3 left-4 w-24 h-16 bg-white/30 rounded-full blur-md"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- CAMADA 6: BADGES ISOMÉTRICOS FIXOS POR CIMA DA IMAGEM -->
+            <div class="absolute inset-0 z-40 pointer-events-none p-4 sm:p-6 flex flex-col justify-between">
+              <!-- Topo: Nomes dos Continentes e Circulação -->
+              <div class="flex justify-between items-start text-xs sm:text-sm font-black">
+                <span class="bg-slate-950/80 border border-slate-700/80 px-3 py-1 rounded-full text-slate-200 tracking-wider shadow-md">
+                  Austrália e Indonésia
+                </span>
+                <span class="bg-cyan-950/80 border border-cyan-400/40 px-3 py-1 rounded-full text-cyan-300 tracking-wider shadow-md">
+                  Circulação atmosférica
+                </span>
+                <span class="bg-slate-950/80 border border-slate-700/80 px-3 py-1 rounded-full text-slate-200 tracking-wider shadow-md">
+                  América do Sul
+                </span>
+              </div>
+
+              <!-- Base: Badges de Água Quente, Água Fria e Ressurgência -->
+              <div class="flex justify-between items-end text-xs font-bold">
+                <span id="pin-hot" class="bg-red-950/85 border border-red-500/50 text-orange-200 px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg shadow-red-950/60 transition-all duration-500">
+                  <i data-lucide="flame" class="w-4 h-4 text-orange-400"></i> Água quente
+                </span>
+
+                <span class="bg-slate-950/70 text-slate-300 font-extrabold px-3 py-1 rounded-full border border-slate-700/60">
+                  Oceano Pacífico
+                </span>
+
+                <div class="flex items-center gap-2">
+                  <span id="pin-cold" class="bg-sky-950/85 border border-sky-400/50 text-cyan-200 px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg shadow-sky-950/60 transition-all duration-500">
+                    <i data-lucide="snowflake" class="w-4 h-4 text-cyan-300"></i> Água fria
+                  </span>
+                  <span id="pin-upwelling" class="bg-teal-950/85 border border-teal-400/50 text-teal-200 px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg shadow-teal-950/60 transition-all duration-500">
+                    <i data-lucide="arrow-up" class="w-4 h-4 text-teal-300"></i> Ressurgência
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 CARDS DESCRITIVOS DO RODAPÉ (Sincronizados em tempo real) -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          
+          <div class="glass-card-subtle p-3 rounded-2xl border border-slate-800 flex items-start gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-cyan-600/30 border border-cyan-400/40 flex items-center justify-center text-cyan-300 shrink-0 mt-0.5">
+              <i data-lucide="wind" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <h4 id="card-ventos-title" class="text-xs font-bold text-cyan-300 tracking-wide">VENTOS ALÍSIOS</h4>
+              <p id="card-ventos-desc" class="text-[11px] text-slate-300 mt-1 leading-snug">
+                Sopram de leste para oeste, empurrando a água quente.
+              </p>
+            </div>
+          </div>
+
+          <div class="glass-card-subtle p-3 rounded-2xl border border-slate-800 flex items-start gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-orange-600/30 border border-orange-400/40 flex items-center justify-center text-orange-400 shrink-0 mt-0.5">
+              <i data-lucide="flame" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <h4 id="card-quente-title" class="text-xs font-bold text-orange-300 tracking-wide">ÁGUA QUENTE</h4>
+              <p id="card-quente-desc" class="text-[11px] text-slate-300 mt-1 leading-snug">
+                Acumula-se no oeste do Pacífico.
+              </p>
+            </div>
+          </div>
+
+          <div class="glass-card-subtle p-3 rounded-2xl border border-slate-800 flex items-start gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-sky-600/30 border border-sky-400/40 flex items-center justify-center text-sky-300 shrink-0 mt-0.5">
+              <i data-lucide="snowflake" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <h4 id="card-fria-title" class="text-xs font-bold text-sky-300 tracking-wide">ÁGUA FRIA</h4>
+              <p id="card-fria-desc" class="text-[11px] text-slate-300 mt-1 leading-snug">
+                Fica mais próxima da costa da América do Sul.
+              </p>
+            </div>
+          </div>
+
+          <div class="glass-card-subtle p-3 rounded-2xl border border-slate-800 flex items-start gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-teal-600/30 border border-teal-400/40 flex items-center justify-center text-teal-300 shrink-0 mt-0.5">
+              <i data-lucide="arrow-up" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <h4 id="card-ressurgencia-title" class="text-xs font-bold text-teal-300 tracking-wide">RESSURGÊNCIA</h4>
+              <p id="card-ressurgencia-desc" class="text-[11px] text-slate-300 mt-1 leading-snug">
+                Traz águas profundas e frias para a superfície.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LADO DIREITO: PAINEL DE CONTROLE INTERATIVO (SLIDERS E TELEMETRIA) -->
+      <div class="lg:col-span-4 glass-card rounded-3xl p-5 sm:p-6 border border-cyan-500/25 space-y-6 shadow-2xl">
+        
+        <div>
+          <h3 class="text-base font-extrabold text-white flex items-center gap-2.5">
+            <i data-lucide="sliders" class="w-5 h-5 text-cyan-400"></i>
+            <span>CONDIÇÃO DO PACÍFICO</span>
+          </h3>
+          <p class="text-xs text-slate-300/80 mt-1.5 leading-relaxed">
+            Explore como o sistema muda entre os diferentes cenários climáticos.
+          </p>
+        </div>
+
+        <!-- Slider 1: NORMAL a EL NIÑO -->
+        <div class="space-y-2.5 bg-slate-900/60 p-4 rounded-2xl border border-slate-800">
+          <div class="flex justify-between items-center text-xs font-bold">
+            <span class="text-slate-400 tracking-wider">NORMAL</span>
+            <span class="text-orange-400 tracking-wider flex items-center gap-1.5">
+              EL NIÑO <span id="val-nino" class="text-[10px] bg-orange-950/80 px-2 py-0.5 rounded-full border border-orange-500/40">0%</span>
+            </span>
+          </div>
+          <input type="range" id="slider-nino" min="0" max="100" value="0" oninput="onSlideNino(this.value)" />
+          <div class="flex justify-between text-[10px] text-slate-400 font-medium">
+            <span>Piscina no Oeste</span>
+            <span class="text-orange-300">Aquecimento no Leste</span>
+          </div>
+        </div>
+
+        <!-- Slider 2: NORMAL a LA NIÑA -->
+        <div class="space-y-2.5 bg-slate-900/60 p-4 rounded-2xl border border-slate-800">
+          <div class="flex justify-between items-center text-xs font-bold">
+            <span class="text-slate-400 tracking-wider">NORMAL</span>
+            <span class="text-cyan-400 tracking-wider flex items-center gap-1.5">
+              LA NIÑA <span id="val-nina" class="text-[10px] bg-cyan-950/80 px-2 py-0.5 rounded-full border border-cyan-500/40">0%</span>
+            </span>
+          </div>
+          <input type="range" id="slider-nina" min="0" max="100" value="0" oninput="onSlideNina(this.value)" />
+          <div class="flex justify-between text-[10px] text-slate-400 font-medium">
+            <span>Equilíbrio</span>
+            <span class="text-cyan-300">Resfriamento Intenso</span>
+          </div>
+        </div>
+
+        <!-- Caixa de Instrução (i) -->
+        <div class="bg-cyan-950/40 border border-cyan-500/30 rounded-2xl p-4 flex items-start gap-3 shadow-inner">
+          <div class="w-6 h-6 rounded-full bg-cyan-600/30 border border-cyan-400/40 flex items-center justify-center text-cyan-300 shrink-0 mt-0.5">
+            <i data-lucide="info" class="w-4 h-4"></i>
+          </div>
+          <p class="text-xs text-cyan-100/90 leading-relaxed">
+            Arraste os controles para ver como o oceano, as nuvens e os ventos em parallax se comportam em cada situação.
+          </p>
+        </div>
+
+        <!-- Telemetria Oceanográfica em Tempo Real -->
+        <div class="bg-slate-950/85 border border-slate-800/80 rounded-2xl p-3.5 space-y-2 text-xs">
+          <div class="flex justify-between items-center text-slate-300">
+            <span class="text-slate-400">Anomalia Térmica (Niño 3.4):</span>
+            <span id="tele-sst" class="font-bold text-emerald-400">0.0 °C (Neutro)</span>
+          </div>
+          <div class="flex justify-between items-center text-slate-300">
+            <span class="text-slate-400">Ventos Alísios Tropicais:</span>
+            <span id="tele-wind" class="font-bold text-cyan-300">Constantes (E &rarr; W)</span>
+          </div>
+          <div class="flex justify-between items-center text-slate-300">
+            <span class="text-slate-400">Ressurgência de Humboldt:</span>
+            <span id="tele-upwelling" class="font-bold text-teal-300">Ativa (100%)</span>
+          </div>
+        </div>
+
+        <!-- Botão Restaurar Condição Normal -->
+        <button onclick="simulateScenario('normal')" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700/80 text-xs font-semibold text-slate-300 hover:text-white transition flex items-center justify-center gap-2 shadow-sm">
+          <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+          <span>Restaurar Condição Normal</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 4. CARDS DE TÓPICOS (ATALHOS PARA PÁGINAS SECUNDÁRIAS) -->
+    <div class="mt-10">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Card 1: OCEANO -->
+        <button onclick="openModal('oceano')" class="glass-card text-left rounded-3xl p-5 border border-cyan-500/20 hover:border-cyan-400/80 hover:-translate-y-1.5 transition-all duration-300 group cursor-pointer flex flex-col justify-between shadow-xl">
+          <div class="flex items-center gap-4">
+            <div class="w-14 h-14 rounded-2xl bg-cyan-600/25 border border-cyan-400/40 flex items-center justify-center text-cyan-300 group-hover:scale-105 group-hover:bg-cyan-500/30 transition-all shrink-0">
+              <i data-lucide="waves" class="w-7 h-7"></i>
+            </div>
+            <div>
+              <h4 class="text-base font-extrabold text-white tracking-wider">OCEANO</h4>
+              <p class="text-xs text-slate-300/80 mt-1">Temperatura da superfície do mar</p>
+            </div>
+          </div>
+          <div class="mt-6 flex justify-end">
+            <span class="w-8 h-8 rounded-full bg-cyan-500/20 text-cyan-300 flex items-center justify-center group-hover:bg-cyan-400 group-hover:text-slate-900 group-hover:translate-x-1.5 transition-all">
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </span>
+          </div>
+        </button>
+
+        <!-- Card 2: ATMOSFERA -->
+        <button onclick="openModal('atmosfera')" class="glass-card text-left rounded-3xl p-5 border border-indigo-500/20 hover:border-indigo-400/80 hover:-translate-y-1.5 transition-all duration-300 group cursor-pointer flex flex-col justify-between shadow-xl">
+          <div class="flex items-center gap-4">
+            <div class="w-14 h-14 rounded-2xl bg-indigo-600/25 border border-indigo-400/40 flex items-center justify-center text-indigo-300 group-hover:scale-105 group-hover:bg-indigo-500/30 transition-all shrink-0">
+              <i data-lucide="cloud" class="w-7 h-7"></i>
+            </div>
+            <div>
+              <h4 class="text-base font-extrabold text-white tracking-wider">ATMOSFERA</h4>
+              <p class="text-xs text-slate-300/80 mt-1">Ventos e circulação atmosférica</p>
+            </div>
+          </div>
+          <div class="mt-6 flex justify-end">
+            <span class="w-8 h-8 rounded-full bg-indigo-500/20 text-indigo-300 flex items-center justify-center group-hover:bg-indigo-400 group-hover:text-slate-900 group-hover:translate-x-1.5 transition-all">
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </span>
+          </div>
+        </button>
+
+        <!-- Card 3: CLIMA -->
+        <button onclick="openModal('clima')" class="glass-card text-left rounded-3xl p-5 border border-emerald-500/20 hover:border-emerald-400/80 hover:-translate-y-1.5 transition-all duration-300 group cursor-pointer flex flex-col justify-between shadow-xl">
+          <div class="flex items-center gap-4">
+            <div class="w-14 h-14 rounded-2xl bg-emerald-600/25 border border-emerald-400/40 flex items-center justify-center text-emerald-300 group-hover:scale-105 group-hover:bg-emerald-500/30 transition-all shrink-0">
+              <i data-lucide="globe-2" class="w-7 h-7"></i>
+            </div>
+            <div>
+              <h4 class="text-base font-extrabold text-white tracking-wider">CLIMA</h4>
+              <p class="text-xs text-slate-300/80 mt-1">Padrões de chuva e temperatura</p>
+            </div>
+          </div>
+          <div class="mt-6 flex justify-end">
+            <span class="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-300 flex items-center justify-center group-hover:bg-emerald-400 group-hover:text-slate-900 group-hover:translate-x-1.5 transition-all">
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </span>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <!-- 5. SEÇÃO DE REDIRECIONAMENTO E NAVEGAÇÃO SEQUENCIAL (RODAPÉ) -->
+    <div class="mt-14 text-center space-y-4 bg-gradient-to-b from-slate-900/40 via-slate-900/60 to-slate-950/90 p-8 rounded-3xl border border-slate-800">
+      <p class="text-sm sm:text-base text-slate-300 font-normal">
+        Agora que você conhece o Pacífico normal, <br />
+        <span class="text-white font-extrabold text-base sm:text-lg">descubra o que acontece quando ele muda.</span>
+      </p>
+
+      <div class="flex justify-center items-center gap-4 flex-wrap pt-2">
+        <button onclick="window.location.href='clima_em_movimento_el_ni_no.html'" class="inline-flex items-center gap-2.5 px-7 py-3 rounded-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-extrabold text-xs sm:text-sm tracking-wider shadow-lg shadow-orange-600/30 hover:scale-105 active:scale-95 transition-all">
+          <i data-lucide="flame" class="w-4 h-4"></i>
+          <span>EXPLORAR EL NIÑO</span>
+        </button>
+
+        <button onclick="window.location.href='la_nina_clima_em_movimento.html'" class="inline-flex items-center gap-2.5 px-7 py-3 rounded-full bg-gradient-to-r from-sky-600 to-cyan-600 hover:from-sky-500 hover:to-cyan-500 text-white font-extrabold text-xs sm:text-sm tracking-wider shadow-lg shadow-cyan-600/30 hover:scale-105 active:scale-95 transition-all">
+          <i data-lucide="snowflake" class="w-4 h-4"></i>
+          <span>EXPLORAR LA NIÑA</span>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODAL DE DETALHES DE PÁGINAS SECUNDÁRIAS -->
+  <div id="modal-container" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden transition-all duration-300">
+    <div class="bg-[#030e24] w-full max-w-2xl rounded-3xl p-6 sm:p-8 relative shadow-2xl border border-cyan-400/30 max-h-[90vh] overflow-y-auto">
+      <button onclick="closeModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 flex items-center justify-center transition">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+      <div id="modal-content"></div>
+    </div>
+  </div>
+
+  <footer class="mt-8 py-5 border-t border-slate-800/80 text-center text-xs text-slate-400 bg-slate-950/80">
+    <div class="max-w-[1440px] mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <i data-lucide="waves" class="w-4 h-4 text-cyan-400"></i>
+        <span class="font-bold text-slate-300">CLIMA EM MOVIMENTO</span>
+        <span>&bull; Plataforma Interativa do Sistema Climático</span>
+      </div>
+      <div>
+        Compatível com Google Antigravity e aceleração GPU.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    lucide.createIcons();
+
+    // DOM Elements
+    const parallaxStage = document.getElementById('parallax-stage');
+    const layerBase = document.getElementById('layer-base');
+    const layerUnderwater = document.getElementById('layer-underwater');
+    const layerSurfaceWinds = document.getElementById('layer-surface-winds');
+    const layerWalkerCirc = document.getElementById('layer-walker-circ');
+    const layerClouds = document.getElementById('layer-clouds');
+
+    const badgeEstado = document.getElementById('badge-estado');
+    const badgeDot = document.getElementById('badge-dot');
+    const badgeEstadoText = document.getElementById('badge-estado-text');
+    const sliderNino = document.getElementById('slider-nino');
+    const sliderNina = document.getElementById('slider-nina');
+    const valNinoDisp = document.getElementById('val-nino');
+    const valNinaDisp = document.getElementById('val-nina');
+
+    const dynamicThermalFilter = document.getElementById('dynamic-thermal-filter');
+    const dynamicOverlayGlow = document.getElementById('dynamic-overlay-glow');
+    const dynamicTradeWinds = document.getElementById('dynamic-trade-winds');
+    const dynamicUpwellingPlume = document.getElementById('dynamic-upwelling-plume');
+    const cloudCellWest = document.getElementById('cloud-cell-west');
+    const cloudCellEast = document.getElementById('cloud-cell-east');
+
+    const cardVentosTitle = document.getElementById('card-ventos-title');
+    const cardVentosDesc = document.getElementById('card-ventos-desc');
+    const cardQuenteDesc = document.getElementById('card-quente-desc');
+    const cardFriaDesc = document.getElementById('card-fria-desc');
+    const cardRessurgenciaDesc = document.getElementById('card-ressurgencia-desc');
+
+    const pinHot = document.getElementById('pin-hot');
+    const pinCold = document.getElementById('pin-cold');
+    const pinUpwelling = document.getElementById('pin-upwelling');
+
+    const teleSst = document.getElementById('tele-sst');
+    const teleWind = document.getElementById('tele-wind');
+    const teleUpwelling = document.getElementById('tele-upwelling');
+
+    // ==========================================
+    // PARALLAX ENGINE (Multi-layer Depth Calculation)
+    // ==========================================
+    function handleParallaxMove(e) {
+      const rect = parallaxStage.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+
+      // Normalized coordinates from -1 to 1 (centered at stage origin)
+      const nx = (mouseX / rect.width - 0.5) * 2;
+      const ny = (mouseY / rect.height - 0.5) * 2;
+
+      applyParallaxOffsets(nx, ny);
+    }
+
+    function handleTouchParallax(e) {
+      if (!e.touches || e.touches.length === 0) return;
+      const touch = e.touches[0];
+      const rect = parallaxStage.getBoundingClientRect();
+      const nx = ((touch.clientX - rect.left) / rect.width - 0.5) * 2;
+      const ny = ((touch.clientY - rect.top) / rect.height - 0.5) * 2;
+
+      applyParallaxOffsets(nx, ny);
+    }
+
+    function applyParallaxOffsets(nx, ny) {
+      // Depth Multipliers for each layer
+      // Layer Base (Background Image): moves slightly in opposite direction (-8px)
+      layerBase.style.transform = `scale(1.05) translate3d(${-nx * 8}px, ${-ny * 5}px, 0)`;
+
+      // Layer Underwater (Deep currents & upwelling): moderate positive movement (+15px)
+      layerUnderwater.style.transform = `translate3d(${nx * 14}px, ${ny * 8}px, 0)`;
+
+      // Layer Surface Winds (Trade wind vectors): medium high (+24px)
+      layerSurfaceWinds.style.transform = `translate3d(${nx * 22}px, ${ny * 12}px, 0)`;
+
+      // Layer Walker Circulation (Upper atmosphere arc): high (+32px)
+      layerWalkerCirc.style.transform = `translate3d(${nx * 30}px, ${ny * 16}px, 0)`;
+
+      // Layer Clouds (Closest to viewer foreground clouds): highest (+42px)
+      layerClouds.style.transform = `translate3d(${nx * 40}px, ${ny * 22}px, 0)`;
+    }
+
+    function resetParallaxMove() {
+      layerBase.style.transform = 'scale(1.05) translate3d(0, 0, 0)';
+      layerUnderwater.style.transform = 'translate3d(0, 0, 0)';
+      layerSurfaceWinds.style.transform = 'translate3d(0, 0, 0)';
+      layerWalkerCirc.style.transform = 'translate3d(0, 0, 0)';
+      layerClouds.style.transform = 'translate3d(0, 0, 0)';
+    }
+
+    // ==========================================
+    // SLIDERS & CLIMATE SIMULATION LOGIC
+    // ==========================================
+    function onSlideNino(val) {
+      val = parseInt(val);
+      sliderNina.value = 0;
+      valNinaDisp.innerText = "0%";
+      valNinoDisp.innerText = `${val}%`;
+
+      if (val === 0) {
+        simulateScenario('normal');
+        return;
+      }
+
+      // Header status badge
+      badgeEstado.className = "text-xs sm:text-sm font-extrabold tracking-wider px-4 py-1.5 rounded-full bg-orange-950/90 border border-orange-500/60 text-orange-200 uppercase shadow-lg shadow-orange-950/60 flex items-center gap-2 transition-all duration-300";
+      badgeDot.className = "w-2.5 h-2.5 rounded-full bg-orange-400 animate-ping";
+      badgeEstadoText.innerText = `O PACÍFICO EM CONDIÇÃO DE EL NIÑO (${val}%)`;
+
+      // Thermal Shaders applied on top of the base image
+      dynamicThermalFilter.style.opacity = `${val * 0.008}`;
+      dynamicThermalFilter.style.background = `radial-gradient(ellipse 65% 55% at ${32 + val * 0.38}% 46%, rgba(239, 68, 68, 0.75) 0%, rgba(249, 115, 22, 0.45) 45%, rgba(14, 165, 233, 0) 80%)`;
+
+      dynamicOverlayGlow.style.opacity = `${val * 0.006}`;
+      dynamicOverlayGlow.style.background = `linear-gradient(90deg, transparent 20%, rgba(234, 88, 12, 0.35) ${38 + val * 0.35}%, rgba(220, 38, 38, 0.4) 100%)`;
+
+      // Moving the floating pins
+      pinHot.style.transform = `translateX(${val * 1.8}px)`;
+      pinCold.style.opacity = `${Math.max(0.2, 1 - val / 85)}`;
+
+      // Trade Winds: weaken and reverse at higher percentages
+      if (val > 55) {
+        dynamicTradeWinds.innerHTML = `
+          <i data-lucide="arrow-right" class="w-7 h-7 sm:w-8 sm:h-8 anim-trade-east stroke-[3.5] text-orange-400"></i>
+          <i data-lucide="arrow-right" class="w-7 h-7 sm:w-8 sm:h-8 anim-trade-east stroke-[3.5] text-orange-400"></i>
+          <i data-lucide="arrow-right" class="w-7 h-7 sm:w-8 sm:h-8 anim-trade-east stroke-[3.5] text-orange-400"></i>
+        `;
+        teleWind.innerText = "Invertidos para Leste (W -> E)";
+        teleWind.className = "font-bold text-orange-400";
+      } else {
+        dynamicTradeWinds.innerHTML = `
+          <i data-lucide="minus" class="w-6 h-6 text-yellow-300"></i>
+          <i data-lucide="arrow-left" class="w-5 h-5 text-yellow-300 opacity-60"></i>
+        `;
+        teleWind.innerText = "Enfraquecidos (< 10 km/h)";
+        teleWind.className = "font-bold text-yellow-300";
+      }
+
+      // Suppress coastal Humboldt upwelling
+      const upw = Math.max(0.05, 1 - val / 85);
+      dynamicUpwellingPlume.style.opacity = `${upw}`;
+      pinUpwelling.style.opacity = `${upw}`;
+
+      // Move convective cloud masses toward Central Pacific
+      cloudCellWest.style.left = `${22 + val * 0.22}%`;
+      cloudCellEast.style.opacity = `${0.5 + val * 0.005}`;
+
+      // Live descriptive cards
+      cardVentosTitle.innerText = "ALÍSIOS ENFRAQUECIDOS";
+      cardVentosDesc.innerText = "Perdem força ou invertem o sentido, cessando o transporte para oeste.";
+      cardQuenteDesc.innerText = "Massa de água quente migra para o centro e leste do Pacífico.";
+      cardFriaDesc.innerText = "Água fria fica reprimida sob a camada espessa de água aquecida.";
+      cardRessurgenciaDesc.innerText = "Ressurgência quase cessa na costa da América do Sul.";
+
+      // Telemetries
+      const anom = (val * 0.035).toFixed(1);
+      teleSst.innerText = `+${anom} °C (Aquecimento)`;
+      teleSst.className = "font-bold text-orange-400";
+      teleUpwelling.innerText = `Suprimida (${Math.max(5, 100 - val)}%)`;
+      teleUpwelling.className = "font-bold text-rose-400";
+
+      lucide.createIcons();
+    }
+
+    function onSlideNina(val) {
+      val = parseInt(val);
+      sliderNino.value = 0;
+      valNinoDisp.innerText = "0%";
+      valNinaDisp.innerText = `${val}%`;
+
+      if (val === 0) {
+        simulateScenario('normal');
+        return;
+      }
+
+      // Header status badge
+      badgeEstado.className = "text-xs sm:text-sm font-extrabold tracking-wider px-4 py-1.5 rounded-full bg-cyan-950/90 border border-cyan-400/60 text-cyan-200 uppercase shadow-lg shadow-cyan-950/60 flex items-center gap-2 transition-all duration-300";
+      badgeDot.className = "w-2.5 h-2.5 rounded-full bg-cyan-300 animate-ping";
+      badgeEstadoText.innerText = `O PACÍFICO EM CONDIÇÃO DE LA NIÑA (${val}%)`;
+
+      // Thermal Shaders applied on top of the base image
+      dynamicThermalFilter.style.opacity = `${val * 0.008}`;
+      dynamicThermalFilter.style.background = `radial-gradient(ellipse 70% 55% at 75% 45%, rgba(6, 182, 212, 0.75) 0%, rgba(2, 132, 199, 0.45) 50%, transparent 85%)`;
+
+      dynamicOverlayGlow.style.opacity = `${val * 0.005}`;
+      dynamicOverlayGlow.style.background = `linear-gradient(90deg, rgba(234, 88, 12, 0.1) 0%, rgba(14, 165, 233, 0.3) 40%, rgba(6, 182, 212, 0.5) 100%)`;
+
+      // Trade Winds: highly accelerated to West
+      dynamicTradeWinds.innerHTML = `
+        <i data-lucide="chevrons-left" class="w-7 h-7 sm:w-9 sm:h-9 anim-trade-west stroke-[3.5] text-cyan-300"></i>
+        <i data-lucide="chevrons-left" class="w-7 h-7 sm:w-9 sm:h-9 anim-trade-west stroke-[3.5] text-cyan-300"></i>
+        <i data-lucide="chevrons-left" class="w-7 h-7 sm:w-9 sm:h-9 anim-trade-west stroke-[3.5] text-cyan-300"></i>
+        <i data-lucide="chevrons-left" class="w-7 h-7 sm:w-9 sm:h-9 anim-trade-west stroke-[3.5] text-cyan-300"></i>
+      `;
+
+      // Maximum Upwelling & Cold Pool
+      dynamicUpwellingPlume.style.opacity = "1";
+      dynamicUpwellingPlume.style.transform = "scale(1.25)";
+      pinUpwelling.style.opacity = "1";
+      pinCold.style.opacity = "1";
+
+      pinHot.style.transform = `translateX(${-val * 0.4}px)`;
+
+      // Storm clouds concentrated on Australia/Indonesia
+      cloudCellWest.style.left = "16%";
+      cloudCellEast.style.opacity = "0.2";
+
+      // Live descriptive cards
+      cardVentosTitle.innerText = "ALÍSIOS INTENSIFICADOS";
+      cardVentosDesc.innerText = "Sopram com força muito superior à média histórica, de leste para oeste.";
+      cardQuenteDesc.innerText = "A massa de água quente fica represada no extremo oeste da bacia.";
+      cardFriaDesc.innerText = "A camada de água fria avança pela superfície por quase todo o Pacífico.";
+      cardRessurgenciaDesc.innerText = "Ressurgência máxima de águas profundas muito frias e férteis.";
+
+      // Telemetries
+      const anom = (val * 0.025).toFixed(1);
+      teleSst.innerText = `-${anom} °C (Resfriamento)`;
+      teleSst.className = "font-bold text-cyan-400";
+      teleWind.innerText = "Hiper-intensos (> 50 km/h E -> W)";
+      teleWind.className = "font-bold text-cyan-300";
+      teleUpwelling.innerText = "Máxima (+160%)";
+      teleUpwelling.className = "font-bold text-teal-300";
+
+      lucide.createIcons();
+    }
+
+    function simulateScenario(mode) {
+      if (mode === 'normal') {
+        sliderNino.value = 0;
+        sliderNina.value = 0;
+        valNinoDisp.innerText = "0%";
+        valNinaDisp.innerText = "0%";
+
+        badgeEstado.className = "text-xs sm:text-sm font-extrabold tracking-wider px-4 py-1.5 rounded-full bg-cyan-900/80 border border-cyan-400/50 text-cyan-200 uppercase shadow-lg shadow-cyan-950/60 flex items-center gap-2 transition-all duration-300";
+        badgeDot.className = "w-2.5 h-2.5 rounded-full bg-cyan-300 animate-pulse";
+        badgeEstadoText.innerText = "O PACÍFICO EM CONDIÇÕES NORMAIS";
+
+        dynamicThermalFilter.style.opacity = "0";
+        dynamicOverlayGlow.style.opacity = "0";
+
+        dynamicTradeWinds.innerHTML = `
+          <i data-lucide="arrow-left" class="w-7 h-7 sm:w-8 sm:h-8 anim-trade-west stroke-[3.5]"></i>
+          <i data-lucide="arrow-left" class="w-7 h-7 sm:w-8 sm:h-8 anim-trade-west stroke-[3.5]"></i>
+          <i data-lucide="arrow-left" class="w-7 h-7 sm:w-8 sm:h-8 anim-trade-west stroke-[3.5]"></i>
+          <i data-lucide="arrow-left" class="w-7 h-7 sm:w-8 sm:h-8 anim-trade-west stroke-[3.5]"></i>
+        `;
+
+        dynamicUpwellingPlume.style.opacity = "1";
+        dynamicUpwellingPlume.style.transform = "scale(1)";
+        pinUpwelling.style.opacity = "1";
+        pinCold.style.opacity = "1";
+        pinHot.style.transform = "translateX(0px)";
+
+        cloudCellWest.style.left = "22%";
+        cloudCellEast.style.opacity = "0.5";
+
+        cardVentosTitle.innerText = "VENTOS ALÍSIOS";
+        cardVentosDesc.innerText = "Sopram de leste para oeste, empurrando a água quente.";
+        cardQuenteDesc.innerText = "Acumula-se no oeste do Pacífico.";
+        cardFriaDesc.innerText = "Fica mais próxima da costa da América do Sul.";
+        cardRessurgenciaDesc.innerText = "Traz águas profundas e frias para a superfície.";
+
+        teleSst.innerText = "0.0 °C (Neutro)";
+        teleSst.className = "font-bold text-emerald-400";
+        teleWind.innerText = "Constantes (E -> W)";
+        teleWind.className = "font-bold text-cyan-300";
+        teleUpwelling.innerText = "Ativa (100%)";
+        teleUpwelling.className = "font-bold text-teal-300";
+      } else if (mode === 'nino') {
+        sliderNino.value = 85;
+        onSlideNino(85);
+      } else if (mode === 'nina') {
+        sliderNina.value = 85;
+        onSlideNina(85);
+      }
+      lucide.createIcons();
+    }
+
+    function loadUserDioramaImage(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const bgImg = document.getElementById('diorama-bg-image');
+        bgImg.src = evt.target.result;
+        bgImg.classList.remove('hidden');
+        document.getElementById('vector-diorama-fallback').classList.add('hidden');
+        document.getElementById('img-upload-label').innerText = file.name;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function handleImageFallback(imgElem) {
+      document.getElementById('vector-diorama-fallback').classList.remove('hidden');
+    }
+
+    // Subpages Data
+    const subpagesData = {
+      oceano: {
+        title: "Página Secundária: Detalhes do Oceano",
+        badge: "Oceanografia Física",
+        icon: "waves",
+        color: "text-cyan-400",
+        content: `
+          <p class="text-sm text-slate-300 leading-relaxed mb-4">
+            No Oceano Pacífico tropical, o calor solar concentra-se na camada superior. O contínuo arrasto mecânico exercido pelos ventos alísios desloca essa água aquecida para o oeste, gerando uma inclinação marcante na <strong>Termoclina</strong> (a barreira térmica entre as águas quentes superficiais e o abismo frio oceânico).
+          </p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="bg-slate-900/90 p-4 rounded-2xl border border-cyan-500/20">
+              <span class="text-xs font-bold text-cyan-300 uppercase block mb-1">Onda de Kelvin Equatorial</span>
+              <p class="text-xs text-slate-400">Pulso subsuperficial que se propaga de oeste para leste quando os ventos alísios relaxam, aprofundando a termoclina no litoral sul-americano.</p>
+            </div>
+            <div class="bg-slate-900/90 p-4 rounded-2xl border border-cyan-500/20">
+              <span class="text-xs font-bold text-cyan-300 uppercase block mb-1">Corrente de Humboldt</span>
+              <p class="text-xs text-slate-400">Corrente costeira fria de alta densidade que sustenta um dos biomas pesqueiros mais ricos do planeta.</p>
+            </div>
+          </div>
+        `
+      },
+      atmosfera: {
+        title: "Página Secundária: Detalhes da Atmosfera",
+        badge: "Meteorologia Dinâmica",
+        icon: "cloud",
+        color: "text-indigo-400",
+        content: `
+          <p class="text-sm text-slate-300 leading-relaxed mb-4">
+            O motor atmosférico do Pacífico é a <strong>Circulação de Walker</strong>. O ar sobe sobre as águas quentes do oeste por convecção profunda, viaja para leste na alta troposfera e desce sobre as águas frias da América do Sul como ar seco.
+          </p>
+          <div class="p-4 bg-indigo-950/40 rounded-2xl border border-indigo-500/30 text-xs text-indigo-200">
+            <strong>Acoplamento Oceano-Atmosfera:</strong> Durante o El Niño, a convecção tropical migra para o Pacífico Central/Leste, alterando o padrão global de correntes de jato (Jet Streams).
+          </div>
+        `
+      },
+      clima: {
+        title: "Página Secundária: Detalhes do Clima Global",
+        badge: "Climatologia & Teleconexões",
+        icon: "globe-2",
+        color: "text-emerald-400",
+        content: `
+          <p class="text-sm text-slate-300 leading-relaxed mb-4">
+            As perturbações no Pacífico propagam ondas de Rossby atmosféricas que afetam continentes distantes por <strong>teleconexões</strong>:
+          </p>
+          <div class="space-y-3">
+            <div class="bg-slate-900/90 p-3.5 rounded-2xl border border-orange-500/30 text-xs">
+              <strong class="text-orange-400 block mb-1">Impactos do El Niño:</strong>
+              <p class="text-slate-300">Secas severas na Amazônia e no semiárido do Nordeste brasileiro; chuvas torrenciais no Sul do Brasil, Peru e sul dos EUA.</p>
+            </div>
+            <div class="bg-slate-900/90 p-3.5 rounded-2xl border border-cyan-500/30 text-xs">
+              <strong class="text-cyan-400 block mb-1">Impactos da La Niña:</strong>
+              <p class="text-slate-300">Monções mais fortes na Ásia, quadra chuvosa abundante no Nordeste do Brasil e estiagens prolongadas na Bacia do Rio da Prata.</p>
+            </div>
+          </div>
+        `
+      },
+      brasil: {
+        title: "Impactos Regionais no Brasil",
+        badge: "Climatologia Regional",
+        icon: "map-pin",
+        color: "text-emerald-400",
+        content: `
+          <ul class="text-xs text-slate-300 space-y-2 list-disc pl-5">
+            <li><strong>Região Norte:</strong> Queda acentuada na precipitação e risco ampliado de queimadas durante El Niño.</li>
+            <li><strong>Região Nordeste:</strong> Bloqueio das frentes chuvosas no semiárido sob El Niño; inverno chuvoso sob La Niña.</li>
+            <li><strong>Região Sul:</strong> Precipitação muito superior à média e inundações históricas em eventos de El Niño.</li>
+          </ul>
+        `
+      },
+      dados: {
+        title: "Monitoramento e Redes de Observação",
+        badge: "Bases Científicas",
+        icon: "bar-chart-2",
+        color: "text-sky-400",
+        content: `
+          <div class="p-4 bg-slate-900/90 rounded-2xl border border-slate-800 text-xs space-y-3">
+            <div class="flex justify-between border-b border-slate-800 pb-2">
+              <span>Rede de Bóias TAO / TRITON:</span>
+              <strong class="text-cyan-300">55 fundeadas no Pacífico</strong>
+            </div>
+            <div class="flex justify-between border-b border-slate-800 pb-2">
+              <span>Satélites Altimétricos (Jason/Sentinel):</span>
+              <strong class="text-cyan-300">Anomalia do Nível do Mar</strong>
+            </div>
+            <div class="flex justify-between">
+              <span>Índice Oceânico Niño (ONI):</span>
+              <strong class="text-emerald-400">Monitoramento Contínuo</strong>
+            </div>
+          </div>
+        `
+      },
+      desafio: {
+        title: "Desafio do Clima Interativo",
+        badge: "Gamificação Educacional",
+        icon: "gamepad-2",
+        color: "text-purple-400",
+        content: `
+          <p class="text-sm text-slate-300 leading-relaxed mb-4">
+            Assuma o papel de um meteorologista-chefe. Ajuste as comportas de barragens hidrelétricas e a safra agrícola prevendo a transição de uma La Niña para um super El Niño!
+          </p>
+        `
+      },
+      sobre: {
+        title: "Sobre o Projeto Clima em Movimento",
+        badge: "Educação & Ciência",
+        icon: "info",
+        color: "text-cyan-400",
+        content: `
+          <p class="text-sm text-slate-300 leading-relaxed mb-3">
+            Plataforma interativa projetada para divulgar o funcionamento dinâmico do sistema climático terrestre, desmistificando o acoplamento oceano-atmosfera de forma visual e intuitiva.
+          </p>
+        `
+      }
+    };
+
+    function openModal(topicKey) {
+      const data = subpagesData[topicKey];
+      if (!data) return;
+
+      const modalContainer = document.getElementById('modal-container');
+      const modalContent = document.getElementById('modal-content');
+
+      modalContent.innerHTML = `
+        <div class="flex items-center gap-3 mb-5">
+          <div class="w-12 h-12 rounded-2xl bg-cyan-600/20 border border-cyan-400/40 flex items-center justify-center ${data.color}">
+            <i data-lucide="${data.icon}" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <span class="text-[10px] font-bold tracking-widest uppercase bg-cyan-950 px-2 py-0.5 rounded text-cyan-300 border border-cyan-500/30">${data.badge}</span>
+            <h3 class="text-xl font-extrabold text-white mt-1">${data.title}</h3>
+          </div>
+        </div>
+        ${data.content}
+      `;
+
+      modalContainer.classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeModal() {
+      document.getElementById('modal-container').classList.add('hidden');
+    }
+
+    document.getElementById('modal-container').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+
+  </script>
+</body>
+</html>

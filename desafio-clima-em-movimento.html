@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Desafio Científico - Clima em Movimento | Quiz do ENOS</title>
+  
+  <!-- Fontes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            ocean: {
+              950: '#020713',
+              900: '#051024',
+              850: '#081734',
+              800: '#0d2249',
+              700: '#1a4185',
+            }
+          },
+          boxShadow: {
+            'glow-cyan': '0 0 25px -2px rgba(6, 182, 212, 0.45)',
+            'glow-orange': '0 0 25px -2px rgba(249, 115, 22, 0.45)',
+            'glow-emerald': '0 0 25px -2px rgba(16, 185, 129, 0.45)',
+            'glow-purple': '0 0 30px -3px rgba(168, 85, 247, 0.45)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #020713;
+      color: #f1f5f9;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+    }
+    
+    /* Header Padronizado */
+    .cm-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      background: rgba(3,8,22,.88);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      box-sizing: border-box;
+      width: 100%;
+    }
+    @media(min-width: 1024px) {
+      .cm-header { padding: 12px 48px; }
+    }
+    .cm-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .cm-logo-ic {
+      width: 40px;
+      height: 40px;
+      border-radius: 9999px;
+      background: rgba(8,145,178,.25);
+      border: 1px solid rgba(34,211,238,.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #67e8f9;
+      transition: transform .15s;
+    }
+    .cm-logo:hover .cm-logo-ic { transform: scale(1.05); }
+    .cm-logo-ic i, .cm-logo-ic svg { width: 20px; height: 20px; }
+    .cm-logo h1 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: .05em;
+      line-height: 1;
+      color: #fff;
+    }
+    .cm-logo p {
+      margin: 2px 0 0;
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: .025em;
+      color: rgba(103,232,249,.8);
+    }
+    @media(min-width: 640px) {
+      .cm-logo h1 { font-size: 16px; }
+      .cm-logo p { font-size: 11px; }
+    }
+    .cm-nav {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    @media(min-width: 1280px) {
+      .cm-nav { display: flex; }
+    }
+    .cm-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: #cbd5e1;
+      font: inherit;
+      line-height: 1rem;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .cm-btn:hover {
+      background: rgba(30,41,59,.6);
+      color: var(--hv);
+    }
+    .cm-btn i, .cm-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+    .cm-ic-orange { color: #fb923c; }
+    .cm-ic-cyan { color: #67e8f9; }
+    .cm-btn.cm-active {
+      background: rgba(6,182,212,.2);
+      color: #67e8f9;
+      border-color: rgba(34,211,238,.4);
+    }
+    .cm-btn.cm-active:hover { color: #67e8f9; }
+
+    .glass-panel {
+      background: rgba(5, 16, 36, 0.75);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(26, 65, 133, 0.45);
+    }
+    .opt-btn {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .opt-btn:hover:not(:disabled) {
+      transform: translateX(4px);
+      border-color: rgba(34, 211, 238, 0.6);
+      background-color: rgba(8, 23, 52, 0.9);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-cyan-500 selection:text-ocean-950">
+
+  <!-- ========================================== -->
+  <!-- 1. NAVBAR SUPERIOR PADRONIZADA            -->
+  <!-- ========================================== -->
+  <header class="cm-header">
+    <div class="cm-logo" onclick="window.location.href='gemini-pagina-inicial.html'">
+      <div class="cm-logo-ic"><i data-lucide="globe"></i></div>
+      <div>
+        <h1>CLIMA EM MOVIMENTO</h1>
+        <p>Quando o oceano muda, o planeta responde.</p>
+      </div>
+    </div>
+    <nav class="cm-nav">
+      <button class="cm-btn" onclick="window.location.href='gemini-pagina-inicial.html'" style="--hv:#ffffff">
+        <i data-lucide="home"></i> Início
+      </button>
+      <button class="cm-btn" onclick="window.location.href='clima_em_movimento_o_fen_meno-2.html'" style="--hv:#ffffff">
+        <i data-lucide="waves"></i> O Fenômeno
+      </button>
+      <button class="cm-btn" onclick="window.location.href='clima_em_movimento_el_ni_no.html'" style="--hv:#fb923c">
+        <i data-lucide="flame" class="cm-ic-orange"></i> El Niño
+      </button>
+      <button class="cm-btn" onclick="window.location.href='la_nina_clima_em_movimento.html'" style="--hv:#67e8f9">
+        <i data-lucide="snowflake" class="cm-ic-cyan"></i> La Niña
+      </button>
+      <button class="cm-btn" onclick="window.location.href='brasil-clima-em-movimento.html'" style="--hv:#34d399">
+        <i data-lucide="map-pin"></i> Brasil
+      </button>
+      <button class="cm-btn" onclick="window.location.href='dados-clima-em-movimento.html'" style="--hv:#ffffff">
+        <i data-lucide="bar-chart-2"></i> Dados
+      </button>
+      <!-- ITEM ATIVO: DESAFIO -->
+      <button class="cm-btn cm-active">
+        <i data-lucide="gamepad-2"></i> Desafio
+      </button>
+    </nav>
+  </header>
+
+  <!-- ========================================== -->
+  <!-- CONTEÚDO PRINCIPAL DO QUIZ                 -->
+  <!-- ========================================== -->
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-20 relative z-10 w-full flex-1">
+
+    <!-- TELA INICIAL: APRESENTAÇÃO DO DESAFIO -->
+    <section id="screen-intro" class="text-center py-6">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-950/60 border border-cyan-500/40 text-cyan-300 text-xs font-semibold uppercase tracking-wider mb-4 shadow-glow-cyan">
+        <i data-lucide="award" class="w-4 h-4"></i>
+        Desafio Científico Interativo
+      </div>
+      <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight">
+        TESTE SEUS <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-sky-300 to-blue-500">CONHECIMENTOS</span>
+      </h1>
+      <p class="text-slate-300 text-sm sm:text-base mt-3 max-w-xl mx-auto leading-relaxed">
+        Você responderá a <strong>10 perguntas aleatórias</strong> selecionadas do nosso banco de dados oficial sobre El Niño, La Niña e os impactos no Brasil.
+      </p>
+
+      <!-- Grade Informativa dos Níveis -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto my-8">
+        <div class="p-4 rounded-2xl bg-ocean-900/80 border border-emerald-500/30 text-left">
+          <span class="text-xs font-mono font-bold text-emerald-400 block mb-1 uppercase">🟢 4 Perguntas Fáceis</span>
+          <p class="text-[11px] text-slate-300 leading-relaxed">Conceitos fundamentais de oceano, ventos alísios e localização geográfica.</p>
+        </div>
+        <div class="p-4 rounded-2xl bg-ocean-900/80 border border-amber-500/30 text-left">
+          <span class="text-xs font-mono font-bold text-amber-400 block mb-1 uppercase">🟡 4 Perguntas Médias</span>
+          <p class="text-[11px] text-slate-300 leading-relaxed">Circulação de Walker, anomalias regionais do Brasil e monitoramento NOAA.</p>
+        </div>
+        <div class="p-4 rounded-2xl bg-ocean-900/80 border border-purple-500/30 text-left">
+          <span class="text-xs font-mono font-bold text-purple-400 block mb-1 uppercase">🟣 2 Perguntas Difíceis</span>
+          <p class="text-[11px] text-slate-300 leading-relaxed">Física avançada: ondas Kelvin, termoclina, Modoki e feedback de Bjerknes.</p>
+        </div>
+      </div>
+
+      <button onclick="iniciarQuiz()" class="px-9 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-black text-sm uppercase tracking-wider shadow-glow-cyan flex items-center justify-center gap-3 mx-auto transition transform hover:scale-105 active:scale-95">
+        <i data-lucide="play" class="w-5 h-5 fill-current"></i>
+        <span>INICIAR DESAFIO (10 PERGUNTAS)</span>
+      </button>
+    </section>
+
+    <!-- TELA DO JOGO: PERGUNTA ATIVA -->
+    <section id="screen-quiz" class="hidden">
+      <!-- Barra Superior de Status -->
+      <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+        <div class="flex items-center gap-3">
+          <span class="text-xs font-mono font-bold text-cyan-400 uppercase" id="quiz-step-text">
+            Pergunta 1 de 10
+          </span>
+          <span id="quiz-diff-badge" class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase">
+            Fácil
+          </span>
+        </div>
+        <div class="flex items-center gap-2 text-xs font-mono text-slate-400">
+          <span>Pontuação Atual:</span>
+          <span id="quiz-score-live" class="text-emerald-400 font-bold">0 pts</span>
+        </div>
+      </div>
+
+      <!-- Barra de Progresso Visual -->
+      <div class="w-full h-2 rounded-full bg-ocean-950 overflow-hidden border border-ocean-800 mb-6">
+        <div id="quiz-progress-bar" class="h-full rounded-full bg-gradient-to-r from-cyan-500 via-sky-400 to-blue-500 transition-all duration-300" style="width: 10%;"></div>
+      </div>
+
+      <!-- Card da Pergunta -->
+      <div class="glass-panel rounded-3xl p-6 sm:p-8 shadow-2xl mb-6">
+        <h2 id="quiz-question-text" class="text-lg sm:text-xl font-bold text-white leading-relaxed mb-6">
+          Carregando pergunta...
+        </h2>
+
+        <!-- Alternativas -->
+        <div id="quiz-options-container" class="space-y-3">
+          <!-- Gerado via JavaScript -->
+        </div>
+
+        <!-- Caixa de Feedback e Explicação (Após Responder) -->
+        <div id="quiz-feedback-box" class="hidden mt-6 p-4 rounded-2xl border text-xs leading-relaxed transition-all">
+          <div class="flex items-center gap-2 font-bold mb-1" id="quiz-feedback-title"></div>
+          <p id="quiz-feedback-expl" class="text-slate-300"></p>
+        </div>
+
+        <!-- Botão Próxima Pergunta -->
+        <div class="mt-6 flex justify-end">
+          <button id="btn-next-question" onclick="proximaPergunta()" disabled class="px-6 py-3 rounded-xl bg-ocean-800 text-slate-500 font-bold text-xs uppercase tracking-wider transition flex items-center gap-2 cursor-not-allowed">
+            <span>Próxima Pergunta</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TELA FINAL: RESULTADO E PONTUAÇÃO -->
+    <section id="screen-result" class="hidden text-center py-6">
+      <div class="glass-panel rounded-3xl p-8 sm:p-12 max-w-2xl mx-auto shadow-2xl">
+        
+        <div id="result-badge-icon" class="w-20 h-20 rounded-3xl bg-cyan-600/20 border border-cyan-400/40 flex items-center justify-center text-4xl mx-auto mb-4 shadow-glow-cyan">
+          🏆
+        </div>
+
+        <h2 class="text-2xl sm:text-4xl font-black text-white tracking-tight" id="result-title">
+          Parabéns!
+        </h2>
+        
+        <p class="text-slate-300 text-sm mt-2" id="result-subtitle">
+          Você concluiu a rodada de 10 perguntas científicas do ENOS.
+        </p>
+
+        <!-- Placar -->
+        <div class="my-8 p-6 rounded-2xl bg-ocean-950/90 border border-ocean-700/80 max-w-sm mx-auto">
+          <div class="text-[11px] font-mono uppercase text-slate-400 font-bold">
+            Sua Pontuação Final
+          </div>
+          <div class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-emerald-400 my-2 font-mono" id="result-score">
+            8 / 10
+          </div>
+          <div class="text-xs font-semibold text-slate-300" id="result-percentage">
+            80% de aproveitamento
+          </div>
+        </div>
+
+        <!-- Classificação Educacional -->
+        <div class="p-4 rounded-xl bg-ocean-900 border border-ocean-800 text-xs text-slate-300 mb-8 max-w-md mx-auto text-left" id="result-comment">
+          <!-- Gerado via script -->
+        </div>
+
+        <!-- Ações Finais -->
+        <div class="flex items-center justify-center gap-4 flex-wrap">
+          <button onclick="reiniciarQuiz()" class="px-7 py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-xs uppercase tracking-wider shadow-glow-cyan flex items-center gap-2 transition">
+            <i data-lucide="rotate-ccw" class="w-4 h-4"></i> Jogar Novamente (Novo Sorteio)
+          </button>
+          <button onclick="window.location.href='dados-clima-em-movimento.html'" class="px-7 py-3.5 rounded-2xl bg-ocean-850 hover:bg-ocean-800 border border-ocean-700 text-slate-200 font-bold text-xs uppercase tracking-wider transition flex items-center gap-2">
+            <i data-lucide="bar-chart-2" class="w-4 h-4"></i> Rever Dados do Site
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- RODAPÉ GLOBAL -->
+  <footer class="border-t border-ocean-800/80 bg-ocean-950/80 py-6 text-center text-xs text-slate-500">
+    <p>Projeto Clima em Movimento • Observatório Educacional Oceano-Atmosfera</p>
+  </footer>
+
+  <!-- ========================================== -->
+  <!-- LÓGICA DO QUIZ EM JAVASCRIPT               -->
+  <!-- ========================================== -->
+  <script>
+    lucide.createIcons();
+
+    // BANCO COMPLETO DE QUESTÕES (60 Itens)
+    const BANCO_QUESTOES = [
+  {
+    "id": 1,
+    "diff": "facil",
+    "q": "O que significa a sigla ENOS (ou ENSO em inglês)?",
+    "opts": [
+      "El Niño – Oscilação Sul",
+      "Energia Nuclear e Ondas do Sul",
+      "Estudo Nacional dos Oceanos do Sul",
+      "Efeito Noturno de Ondas Submarinas"
+    ],
+    "ans": 0,
+    "expl": "ENOS significa El Niño – Oscilação Sul, representando a interação entre o oceano e a atmosfera no Pacífico tropical."
+  },
+  {
+    "id": 2,
+    "diff": "facil",
+    "q": "Em qual oceano ocorre primariamente o fenômeno El Niño e La Niña?",
+    "opts": [
+      "Oceano Atlântico",
+      "Oceano Índico",
+      "Oceano Pacífico",
+      "Oceano Ártico"
+    ],
+    "ans": 2,
+    "expl": "O ENOS ocorre no Oceano Pacífico equatorial, influenciando o clima de todo o globo."
+  },
+  {
+    "id": 3,
+    "diff": "facil",
+    "q": "Qual é a principal característica da temperatura das águas durante o El Niño?",
+    "opts": [
+      "Águas anormalmente mais quentes no Pacífico equatorial",
+      "Congelamento total da costa do Peru",
+      "Resfriamento extremo das águas equatoriais",
+      "Aumento da temperatura apenas nos polos"
+    ],
+    "ans": 0,
+    "expl": "O El Niño representa a fase quente, onde as águas do Pacífico central e leste sofrem aquecimento anormal."
+  },
+  {
+    "id": 4,
+    "diff": "facil",
+    "q": "Qual é a principal característica da temperatura das águas durante a La Niña?",
+    "opts": [
+      "Aquecimento extremo das águas",
+      "Águas anormalmente mais frias no Pacífico equatorial",
+      "Aumento da evaporação no deserto do Atacama",
+      "Inalterabilidade das correntes marítimas"
+    ],
+    "ans": 1,
+    "expl": "A La Niña é a contrapartida fria, caracterizada por águas superficiais mais frias que a média."
+  },
+  {
+    "id": 5,
+    "diff": "facil",
+    "q": "Qual é o nome dos ventos constantes que sopram de leste para oeste na linha do Equador?",
+    "opts": [
+      "Ventos Alísios",
+      "Ventos Polares",
+      "Monções de Verão",
+      "Brisa Terrestre"
+    ],
+    "ans": 0,
+    "expl": "Os ventos alísios sopram constantemente dos trópicos em direção ao equador, de leste para oeste."
+  },
+  {
+    "id": 6,
+    "diff": "facil",
+    "q": "Durante o El Niño, qual costuma ser o impacto predominante de chuvas na Região Sul do Brasil?",
+    "opts": [
+      "Seca extrema e histórica",
+      "Aumento significativo das chuvas e tempestades",
+      "Diminuição das geadas e ausência de nuvens",
+      "Neve constante durante todo o verão"
+    ],
+    "ans": 1,
+    "expl": "No Sul do Brasil, o El Niño bloqueia frentes frias, provocando chuvas torrenciais e inundações frequentes."
+  },
+  {
+    "id": 7,
+    "diff": "facil",
+    "q": "Qual região do Brasil costuma sofrer com secas mais acentuadas durante eventos de El Niño?",
+    "opts": [
+      "Região Sul",
+      "Região Sudeste apenas no litoral",
+      "Semiárido do Nordeste e partes da Amazônia",
+      "Extremo sul do Rio Grande do Sul"
+    ],
+    "ans": 2,
+    "expl": "O El Niño altera a circulação atmosférica, inibindo a formação de nuvens no semiárido nordestino e no norte do país."
+  },
+  {
+    "id": 8,
+    "diff": "facil",
+    "q": "O que acontece com os ventos alísios durante a La Niña?",
+    "opts": [
+      "Eles desaparecem completamente",
+      "Eles mudam de direção e sopram para o norte",
+      "Eles ficam mais intensos e fortes que o normal",
+      "Eles aquecem a estratosfera"
+    ],
+    "ans": 2,
+    "expl": "Durante a La Niña, os ventos alísios se fortalecem vigorosamente, empurrando mais água quente para o oeste."
+  },
+  {
+    "id": 9,
+    "diff": "facil",
+    "q": "Qual país da América do Sul é diretamente vizinho às águas onde a temperatura do Pacífico muda no ENOS?",
+    "opts": [
+      "Peru",
+      "Argentina",
+      "Uruguai",
+      "Paraguai"
+    ],
+    "ans": 0,
+    "expl": "A costa do Peru e do Equador fica de frente para o Pacífico leste, sendo historicamente a primeira a registrar as anomalias."
+  },
+  {
+    "id": 10,
+    "diff": "facil",
+    "q": "Por que pescadores peruanos deram o nome de 'El Niño' a esse fenômeno?",
+    "opts": [
+      "Porque ele durava apenas algumas horas como uma criança",
+      "Por ocorrer tradicionalmente próximo à época do Natal (o 'Menino Jesus')",
+      "Em homenagem a uma embarcação famosa do século XIX",
+      "Porque afastava os peixes pequenos"
+    ],
+    "ans": 1,
+    "expl": "O aquecimento das águas costeiras costumava ser percebido no final de dezembro, sendo associado ao Menino Jesus ('El Niño')."
+  },
+  {
+    "id": 11,
+    "diff": "facil",
+    "q": "O que é 'ressurgência' no contexto dos oceanos?",
+    "opts": [
+      "A formação de tsunamis em alto-mar",
+      "A subida de águas profundas, frias e ricas em nutrientes à superfície",
+      "O desaparecimento de ondas na praia",
+      "O afundamento de placas tectônicas"
+    ],
+    "ans": 1,
+    "expl": "Ressurgência é o afloramento de águas frias do fundo oceânico, trazendo nutrientes fundamentais para a vida marinha."
+  },
+  {
+    "id": 12,
+    "diff": "facil",
+    "q": "Durante a La Niña, o que costuma acontecer com a chuva no semiárido do Nordeste brasileiro?",
+    "opts": [
+      "A seca se agrava de maneira inédita",
+      "Há maior tendência de chuvas abundantes e recarga de açudes",
+      "Ocorre neve no litoral",
+      "As chuvas cessam por completo durante 5 anos"
+    ],
+    "ans": 1,
+    "expl": "A La Niña favorece a descida da ZCIT, propiciando boas chuvas na quadra chuvosa do semiárido nordestino."
+  },
+  {
+    "id": 13,
+    "diff": "facil",
+    "q": "O que acontece com os ventos alísios durante o El Niño clássico?",
+    "opts": [
+      "Eles enfraquecem ou até diminuem de intensidade",
+      "Eles dobram de velocidade em direção ao Peru",
+      "Eles congelam a camada de ozônio",
+      "Eles sopram apenas de norte para sul"
+    ],
+    "ans": 0,
+    "expl": "No El Niño, o gradiente de pressão diminui e os ventos alísios enfraquecem, permitindo que a água quente retorne ao leste."
+  },
+  {
+    "id": 14,
+    "diff": "facil",
+    "q": "Qual é a camada que separa as águas quentes superficiais das águas profundas e frias?",
+    "opts": [
+      "Atmosfera",
+      "Termoclina",
+      "Litosfera",
+      "Cromosfera"
+    ],
+    "ans": 1,
+    "expl": "A termoclina é a zona de transição térmica acentuada entre a camada superficial aquecida e as águas frias abissais."
+  },
+  {
+    "id": 15,
+    "diff": "facil",
+    "q": "No Brasil, qual setor econômico é altamente impactado por variações nas safras causadas pelo ENOS?",
+    "opts": [
+      "Agronegócio",
+      "Indústria de semicondutores",
+      "Mineração de carvão mineral",
+      "Setor espacial"
+    ],
+    "ans": 0,
+    "expl": "A agricultura depende diretamente do regime de chuvas e temperatura, sofrendo impactos diretos do ENOS."
+  },
+  {
+    "id": 16,
+    "diff": "facil",
+    "q": "A sigla TSM, muito usada nas análises oceanográficas, significa:",
+    "opts": [
+      "Temperatura da Superfície do Mar",
+      "Tempo Solar Médio",
+      "Tensão Salina Marinha",
+      "Transição Sazonal Meteorológica"
+    ],
+    "ans": 0,
+    "expl": "TSM significa Temperatura da Superfície do Mar (em inglês, SST)."
+  },
+  {
+    "id": 17,
+    "diff": "facil",
+    "q": "Qual órgão científico brasileiro é referência na previsão e monitoramento climático do ENOS?",
+    "opts": [
+      "CPTEC/INPE",
+      "IBGE",
+      "ANATEL",
+      "CONAB apenas"
+    ],
+    "ans": 0,
+    "expl": "O Centro de Previsão de Tempo e Estudos Climáticos do INPE (CPTEC/INPE) é referência na modelagem climática."
+  },
+  {
+    "id": 18,
+    "diff": "facil",
+    "q": "Durante eventos de La Niña, o que costuma ocorrer no verão do Rio Grande do Sul?",
+    "opts": [
+      "Enchentes ininterruptas",
+      "Maior frequência de estiagens e déficit de chuva",
+      "Temperaturas polares constantes no litoral",
+      "Nenhuma alteração climática"
+    ],
+    "ans": 1,
+    "expl": "Na La Niña, as frentes frias passam rápido ou são bloqueadas mais ao sul, gerando secas no verão gaúcho."
+  },
+  {
+    "id": 19,
+    "diff": "facil",
+    "q": "O El Niño e a La Niña são fenômenos meteorológicos:",
+    "opts": [
+      "Locais, restritos a uma praia específica",
+      "Globais, com repercussões de teleconexão em todo o planeta",
+      "Causados exclusivamente por usinas nucleares",
+      "Que ocorrem em ciclos diários (dia e noite)"
+    ],
+    "ans": 1,
+    "expl": "São fenômenos de escala global que afetam o clima de múltiplos continentes via teleconexão atmosférica."
+  },
+  {
+    "id": 20,
+    "diff": "facil",
+    "q": "Qual é a agência oceânica e atmosférica dos EUA amplamente citada nos dados do projeto?",
+    "opts": [
+      "NOAA",
+      "NASA apenas",
+      "FBI",
+      "CERN"
+    ],
+    "ans": 0,
+    "expl": "A NOAA (National Oceanic and Atmospheric Administration) monitora e publica os índices oficiais do ENOS."
+  },
+  {
+    "id": 21,
+    "diff": "facil",
+    "q": "Durante a La Niña, a ressurgência de águas ricas em nutrientes na costa do Peru:",
+    "opts": [
+      "É fortalecida, favorecendo a pesca",
+      "É bloqueada e cessa",
+      "Congela os barcos no porto",
+      "Transforma a água em vapor"
+    ],
+    "ans": 0,
+    "expl": "A La Niña potencializa a ressurgência peruana, trazendo abundância de plâncton e cardumes."
+  },
+  {
+    "id": 22,
+    "diff": "facil",
+    "q": "Em condições normais do Pacífico, onde a maior piscina de água quente se acumula?",
+    "opts": [
+      "No extremo oeste (perto da Indonésia e Austrália)",
+      "Colada na praia de Lima, no Peru",
+      "No Polo Norte",
+      "No Estreito de Magalhães"
+    ],
+    "ans": 0,
+    "expl": "Os alísios normais empurram as águas aquecidas pelo sol para o Pacífico ocidental (Warm Pool)."
+  },
+  {
+    "id": 23,
+    "diff": "facil",
+    "q": "Como o El Niño afeta a ocorrência de queimadas e incêndios na Amazônia?",
+    "opts": [
+      "Diminui as queimadas devido a tempestades torrenciais",
+      "Aumenta o risco devido à seca florestal e redução das chuvas",
+      "Não tem qualquer relação",
+      "Apaga focos de fogo com ventos gelados"
+    ],
+    "ans": 1,
+    "expl": "A estiagem prolongada provocada pelo El Niño resseca a vegetação amazônica, aumentando os focos de incêndio."
+  },
+  {
+    "id": 24,
+    "diff": "facil",
+    "q": "Qual índice meteorológico mede a diferença de pressão entre o Taiti e Darwin (Austrália)?",
+    "opts": [
+      "SOI (Índice de Oscilação Sul)",
+      "Índice de Massa Corporal",
+      "Escala Richter",
+      "Índice Dow Jones"
+    ],
+    "ans": 0,
+    "expl": "O SOI (Southern Oscillation Index) baseia-se na flutuação da pressão atmosférica no nível do mar entre Taiti e Darwin."
+  },
+  {
+    "id": 25,
+    "diff": "facil",
+    "q": "Qual recurso energético brasileiro sofre grande oscilação de geração conforme os ciclos do ENOS?",
+    "opts": [
+      "Energia Hidrelétrica (vazão de reservatórios)",
+      "Energia Geotérmica profunda",
+      "Energia Nuclear",
+      "Carvão importado"
+    ],
+    "ans": 0,
+    "expl": "O regime de chuvas abastece as bacias hidrográficas que movimentam as hidrelétricas do país."
+  },
+  {
+    "id": 26,
+    "diff": "media",
+    "q": "Qual célula de circulação atmosférica zonal ao longo do equador é alterada diretamente pelo ENOS?",
+    "opts": [
+      "Circulação de Walker",
+      "Célula de Hadley polar",
+      "Circulação de Coriolis",
+      "Célula de Ferrel tropical"
+    ],
+    "ans": 0,
+    "expl": "A Circulação de Walker é a circulação zonal leste-oeste no Pacífico equatorial descrita por Sir Gilbert Walker."
+  },
+  {
+    "id": 27,
+    "diff": "media",
+    "q": "Na região Niño 3.4, qual desvio mínimo contínuo de temperatura é exigido para classificar um evento El Niño?",
+    "opts": [
+      "Anomalia de pelo menos +0,5 °C por vários meses",
+      "Anomalia de pelo menos +5,0 °C em um único dia",
+      "Anomalia negativa de -1,5 °C",
+      "Apenas quando a temperatura ultrapassa 40 °C"
+    ],
+    "ans": 0,
+    "expl": "A NOAA define El Niño quando o índice ONI atinge ou supera +0,5 °C por no mínimo cinco trimestres móveis consecutivos."
+  },
+  {
+    "id": 28,
+    "diff": "media",
+    "q": "O que acontece com a termoclina no Pacífico Leste (América do Sul) durante um episódio intenso de El Niño?",
+    "opts": [
+      "Ela se aprofunda (desce para ~120 m)",
+      "Ela sobe para a superfície a 0 metros",
+      "Ela se dissipa e vira gelo",
+      "Ela permanece rigorosamente constante a 10 metros"
+    ],
+    "ans": 0,
+    "expl": "Com o colapso dos ventos alísios, a água quente se espalha para o leste, aprofundando a termoclina na costa sul-americana."
+  },
+  {
+    "id": 29,
+    "diff": "media",
+    "q": "Como o El Niño influencia a corrente de jato (Jet Stream) subtropical que passa pela América do Sul?",
+    "opts": [
+      "Intensifica e estabiliza a corrente de jato sobre o Sul do Brasil, bloqueando frentes frias",
+      "Desvia o jato totalmente para a Antártica",
+      "Elimina a corrente de jato durante dois anos",
+      "Faz o jato circular no sentido horário no equador"
+    ],
+    "ans": 0,
+    "expl": "O El Niño fortalece o jato subtropical, gerando bloqueios atmosféricos que retêm tempestades sobre o Sul do Brasil."
+  },
+  {
+    "id": 30,
+    "diff": "media",
+    "q": "O que é a ZCIT (Zona de Convergência Intertropical) e qual seu papel no Nordeste durante La Niña?",
+    "opts": [
+      "Banda de nuvens equatoriais que desce mais ao sul, trazendo chuvas abundantes ao Ceará e sertão",
+      "Uma corrente marinha congelada que impede a chuva",
+      "Um ciclone extratropical exclusivo do litoral de São Paulo",
+      "Uma cordilheira submarina"
+    ],
+    "ans": 0,
+    "expl": "A ZCIT é o principal sistema meteorológico indutor de chuvas no norte do Nordeste; na La Niña ela é atraída para latitudes mais austrais."
+  },
+  {
+    "id": 31,
+    "diff": "media",
+    "q": "Qual evento ficou conhecido na climatologia como 'La Niña Triple-Dip'?",
+    "opts": [
+      "O episódio consecutivo de três anos de La Niña entre 2020 e 2023",
+      "Três tempestades de neve simultâneas no deserto",
+      "O resfriamento de três oceanos ao mesmo tempo",
+      "Um evento que só ocorre a cada 3.000 anos"
+    ],
+    "ans": 0,
+    "expl": "Entre 2020 e 2023 ocorreu uma rara La Niña tripla ('triple-dip'), com três invernos consecutivos sob a fase fria."
+  },
+  {
+    "id": 32,
+    "diff": "media",
+    "q": "Como se comporta o Índice de Oscilação Sul (SOI) durante a fase de El Niño?",
+    "opts": [
+      "Assume valores persistentemente negativos (< -0,8)",
+      "Assume valores persistentemente positivos (> +1,5)",
+      "Permanece exatamente igual a zero",
+      "Oscila entre 100 e 200"
+    ],
+    "ans": 0,
+    "expl": "Valores negativos de SOI indicam pressão anormalmente baixa no Pacífico leste e alta na Indonésia, caracterizando El Niño."
+  },
+  {
+    "id": 33,
+    "diff": "media",
+    "q": "O que são as ondas Kelvin oceânicas no contexto do desencadeamento de um El Niño?",
+    "opts": [
+      "Pulsos de ondas quentes subsuperficiais que se propagam de oeste para leste ao longo do equador",
+      "Ondas sonoras produzidas por baleias no Atlântico",
+      "Tsunamis de gelo no oceano Antártico",
+      "Ventos que sopram acima de 300 km/h"
+    ],
+    "ans": 0,
+    "expl": "Ondas Kelvin oceânicas transportam água quente subsuperficial do Pacífico oeste até a costa sul-americana após rajadas de vento de oeste."
+  },
+  {
+    "id": 34,
+    "diff": "media",
+    "q": "Qual é a principal rede de boias ancoradas no Pacífico tropical mencionada no site?",
+    "opts": [
+      "Rede TAO / TRITON",
+      "Rede GPS Brasil",
+      "Sistema Argos de Satélites Órbita Baixa",
+      "Rede Sísmica Global"
+    ],
+    "ans": 0,
+    "expl": "A rede TAO/TRITON mantém dezenas de boias fundeadas no Pacífico para monitorar o acoplamento oceano-atmosfera."
+  },
+  {
+    "id": 35,
+    "diff": "media",
+    "q": "O que os satélites de altimetria radar (como Sentinel-6 e Jason-3) medem para prever o ENOS?",
+    "opts": [
+      "A altura da superfície do mar com precisão milimétrica",
+      "A temperatura das pedras nas montanhas do Peru",
+      "A quantidade de barcos pesqueiros",
+      "O teor de sal na chuva"
+    ],
+    "ans": 0,
+    "expl": "Água quente se expande termicamente, elevando a altura da superfície do mar, o que é detectado pelos altímetros orbitais."
+  },
+  {
+    "id": 36,
+    "diff": "media",
+    "q": "No Sudeste brasileiro, qual impacto térmico costuma ser mais evidente durante episódios fortes de El Niño?",
+    "opts": [
+      "Frequência aumentada de ondas de calor no verão e inverno mais ameno",
+      "Congelamento dos reservatórios em Minas Gerais",
+      "Queda contínua de 10°C nas médias anuais",
+      "Ausência absoluta de radiação solar"
+    ],
+    "ans": 0,
+    "expl": "O El Niño favorece bloqueios que desviam frentes frias, provocando ondas de calor persistentes no Sudeste."
+  },
+  {
+    "id": 37,
+    "diff": "media",
+    "q": "Durante o 'Super El Niño' de 2015-2016, que recorde térmico de anomalia no índice Niño 3.4 foi registrado?",
+    "opts": [
+      "Aproximadamente +2,6 °C",
+      "Exatamente +0,1 °C",
+      "+8,4 °C",
+      "-3,2 °C"
+    ],
+    "ans": 0,
+    "expl": "O evento de 2015-2016 atingiu anomalia trimestral de +2,6 °C, empatando ou superando o lendário evento de 1997-1998."
+  },
+  {
+    "id": 38,
+    "diff": "media",
+    "q": "O que acontece com os flutuadores do programa internacional Argo?",
+    "opts": [
+      "Mergulham até 2.000 m a cada 10 dias e transmitem perfis verticais de temperatura e salinidade",
+      "Ficam fixos amarrados na beira das praias",
+      "São aviões que sobrevoam os furacões",
+      "São balões meteorológicos de alta altitude"
+    ],
+    "ans": 0,
+    "expl": "Os quase 4.000 flutuadores Argo realizam ciclos verticais de mergulho até 2.000 metros para medir temperatura e salinidade."
+  },
+  {
+    "id": 39,
+    "diff": "media",
+    "q": "Como o El Niño afeta as monções de chuva na Índia e Sudeste Asiático?",
+    "opts": [
+      "Tende a enfraquecer as chuvas de monção, gerando estiagens",
+      "Duplica o volume das chuvas em todo o continente indiano",
+      "Não possui qualquer teleconexão com a Ásia",
+      "Causa congelamento no Oceano Índico"
+    ],
+    "ans": 0,
+    "expl": "O deslocamento da convecção para o Pacífico central inibe a convecção monçônica na Índia, frequentemente reduzindo as chuvas."
+  },
+  {
+    "id": 40,
+    "diff": "media",
+    "q": "Por que o branqueamento de corais em escala global costuma coincidir com anos de Super El Niño?",
+    "opts": [
+      "Pelo estresse térmico prolongado causado pelas altas temperaturas marinhas nos oceanos tropicais",
+      "Por causa de tempestades de granizo no mar",
+      "Pela proliferação de tubarões",
+      "Pela falta de sal na água"
+    ],
+    "ans": 0,
+    "expl": "O calor extremo acumulado no oceano faz com que os corais expulsem suas microalgas simbióticas, levando ao branqueamento."
+  },
+  {
+    "id": 41,
+    "diff": "media",
+    "q": "Na Região Centro-Oeste do Brasil, qual é o impacto mais comum observado no início da safra sob El Niño?",
+    "opts": [
+      "Atraso e irregularidade nas primeiras chuvas de primavera para o plantio da soja",
+      "Neve constante nos planaltos do Mato Grosso",
+      "Inundações universais em todas as cidades",
+      "Nenhum impacto perceptível"
+    ],
+    "ans": 0,
+    "expl": "O El Niño pode desorganizar a transição seca-chuva no Centro-Oeste, atrasando o calendário ideal de plantio."
+  },
+  {
+    "id": 42,
+    "diff": "media",
+    "q": "O que ocorre com a circulação atmosférica sobre o norte do Brasil durante o El Niño?",
+    "opts": [
+      "Movimentos descendentes de ar (subsidência) que inibem a formação de nuvens de chuva",
+      "Movimentos ascendentes violentos gerando tempestades diárias",
+      "Correntes de jato ao nível do solo",
+      "Inversão térmica polar"
+    ],
+    "ans": 0,
+    "expl": "O ramo descendente da Célula de Walker alterada atua sobre a Amazônia/Nordeste, impedindo a convecção profunda."
+  },
+  {
+    "id": 43,
+    "diff": "media",
+    "q": "Qual região do Oceano Pacífico é considerada o termômetro oficial do Índice Oceânico Niño (ONI)?",
+    "opts": [
+      "Região Niño 3.4 (Pacífico Centro-Leste)",
+      "Baía de Guanabara",
+      "Costa da Califórnia (Niño 0)",
+      "Fossa das Marianas"
+    ],
+    "ans": 0,
+    "expl": "A região Niño 3.4 (5°N–5°S, 170°W–120°W) é o padrão internacional adotado para calcular o índice ONI."
+  },
+  {
+    "id": 44,
+    "diff": "media",
+    "q": "Por que a atividade pesqueira no Peru entra em crise durante o El Niño?",
+    "opts": [
+      "Porque a água quente superficial e a termoclina profunda barram a ressurgência de águas frias com nutrientes",
+      "Porque os peixes migram todos para a Amazônia",
+      "Porque os barcos peruanos perdem os motores",
+      "Porque a água se torna doce"
+    ],
+    "ans": 0,
+    "expl": "Sem a subida de nutrientes trazida pela ressurgência fria, o fitoplâncton decai e a anchoveta peruana migra ou morre."
+  },
+  {
+    "id": 45,
+    "diff": "media",
+    "q": "O que é o fenômeno da 'teleconexão' climática?",
+    "opts": [
+      "Conexão entre anomalias atmosféricas em regiões distantes do planeta através de ondas planetárias",
+      "Um cabo submarino de internet que liga oceanos",
+      "A previsão do tempo via televisão",
+      "Um satélite geoestacionário"
+    ],
+    "ans": 0,
+    "expl": "Teleconexão é a ligação climática em que uma anomalia em uma área (ex: Pacífico) afeta o clima a milhares de quilômetros de distância."
+  },
+  {
+    "id": 46,
+    "diff": "media",
+    "q": "Em relação à formação de furacões no Oceano Atlântico Norte, qual o efeito do El Niño?",
+    "opts": [
+      "Tende a inibir furacões devido ao aumento do cisalhamento vertical do vento no Caribe",
+      "Provoca recordes históricos de furacões no Caribe",
+      "Não afeta o Atlântico de forma alguma",
+      "Faz os furacões girarem no sentido horário"
+    ],
+    "ans": 0,
+    "expl": "O El Niño aumenta o vento em altitude (cisalhamento) sobre o Atlântico tropical, desestruturando a formação de furacões."
+  },
+  {
+    "id": 47,
+    "diff": "media",
+    "q": "Em relação à formação de furacões no Oceano Atlântico Norte, qual o efeito da La Niña?",
+    "opts": [
+      "Tende a favorecer temporadas mais ativas e intensas por reduzir o cisalhamento do vento",
+      "Extingue completamente as tempestades tropicais",
+      "Congela o Golfo do México",
+      "Desvia todas as tempestades para a Europa"
+    ],
+    "ans": 0,
+    "expl": "A La Niña reduz o cisalhamento sobre o Atlântico, criando condições ideais para a gênese de furacões mais numerosos."
+  },
+  {
+    "id": 48,
+    "diff": "media",
+    "q": "Durante o El Niño de 1997-1998, qual bacia hidrográfica brasileira sofreu cheias históricas severas?",
+    "opts": [
+      "Bacia do Rio Uruguai e Rio Jacuí no Rio Grande do Sul",
+      "Bacia do Rio São Francisco",
+      "Bacia do Rio Parnaíba no Piauí",
+      "Bacia do Rio Branco em Roraima"
+    ],
+    "ans": 0,
+    "expl": "O evento de 1997/98 despejou volumes pluviométricos extremos na Região Sul, transbordando rios no RS e SC."
+  },
+  {
+    "id": 49,
+    "diff": "media",
+    "q": "Como os episódios de La Niña costumam influenciar a quadra chuvosa do estado do Ceará?",
+    "opts": [
+      "Favorecem chuvas acima da média histórica e recarga hídrica de reservatórios como o Castanhão",
+      "Provocam secas decenais sem chuva",
+      "Impedem a passagem de nuvens",
+      "Causam geadas no sertão"
+    ],
+    "ans": 0,
+    "expl": "A La Niña historicamente é correlacionada a invernos chuvosos no Ceará e recarga essencial de água."
+  },
+  {
+    "id": 50,
+    "diff": "media",
+    "q": "Qual é a periodicidade média típica do ciclo do ENOS (entre uma fase e outra)?",
+    "opts": [
+      "Entre 2 e 7 anos, de forma quase-periódica e irregular",
+      "Exatamente a cada 365 dias",
+      "A cada 100 anos rigorosamente",
+      "A cada 28 dias conforme a lua"
+    ],
+    "ans": 0,
+    "expl": "O ENOS não é estritamente periódico; suas oscilações ocorrem em ciclos irregulares que variam de 2 a 7 anos."
+  },
+  {
+    "id": 51,
+    "diff": "dificil",
+    "q": "Na dinâmica do 'oscilador de recarga' (Recharge Oscillator Model), como o calor equatorial é esvaziado antes da transição para La Niña?",
+    "opts": [
+      "Pelo transporte meridional de Sverdrup divergente, que descarrega o calor da faixa equatorial para latitudes subtropicais",
+      "Pela precipitação de granizo sobre a Linha do Equador que resfria a crosta",
+      "Pela evaporação completa de 10% da água do Pacífico",
+      "Pela absorção térmica do manto terrestre através de dorsais submarinas"
+    ],
+    "ans": 0,
+    "expl": "No modelo de oscilador de recarga de Jin (1997), ventos anômalos causam divergência meridional de massa de água quente, descarregando o calor equatorial."
+  },
+  {
+    "id": 52,
+    "diff": "dificil",
+    "q": "O que diferencia um 'El Niño Canônico' (do leste) de um 'El Niño Modoki' (do Pacífico Central)?",
+    "opts": [
+      "No Modoki, o pico de anomalia quente ocorre no Pacífico Central, flanqueado por águas mais frias a leste e a oeste",
+      "No Modoki, o aquecimento ocorre apenas na atmosfera e não na água",
+      "O Modoki dura menos de 24 horas",
+      "O El Niño Canônico ocorre exclusivamente no Oceano Atlântico Sul"
+    ],
+    "ans": 0,
+    "expl": "O El Niño Modoki (Ashok et al., 2007) apresenta uma estrutura tripolar com aquecimento centrado no Pacífico Central (Niño 4/3.4) e impactos climáticos distintos."
+  },
+  {
+    "id": 53,
+    "diff": "dificil",
+    "q": "Qual mecanismo de feedback positivo entre o oceano e a atmosfera sustenta a amplificação do El Niño?",
+    "opts": [
+      "Feedback de Bjerknes",
+      "Efeito Estufa Runaway",
+      "Feedback de Albedo de Charney",
+      "Ressonância Schumann de Alta Frequência"
+    ],
+    "ans": 0,
+    "expl": "O Feedback de Bjerknes descreve o ciclo vicioso onde águas quentes enfraquecem os alísios, o que por sua vez empurra mais água quente para leste."
+  },
+  {
+    "id": 54,
+    "diff": "dificil",
+    "q": "Como as rajadas de ventos de oeste ('Westerly Wind Bursts' - WWBs) na bacia ocidental precipitam um El Niño?",
+    "opts": [
+      "Geram ondas Kelvin oceânicas de afundamento que suprimem a termoclina ao viajarem para leste",
+      "Empurram o continente australiano para o norte",
+      "Resfriam a superfície marinha a -5 °C instantaneamente",
+      "Bloqueiam a rotação da Terra por alguns milissegundos"
+    ],
+    "ans": 0,
+    "expl": "As WWBs geram ondas Kelvin equatoriais downwelling que aprofundam a termoclina e impedem a ressurgência fria ao atingirem a costa leste."
+  },
+  {
+    "id": 55,
+    "diff": "dificil",
+    "q": "Qual o impacto típico do El Niño sobre a Oscilação Madden-Julian (MJO)?",
+    "opts": [
+      "A convecção da MJO tende a se propagar mais a leste da Linha Internacional de Mudança de Data",
+      "A MJO é totalmente destruída e deixa de existir no globo",
+      "A MJO passa a orbitar apenas os polos norte e sul",
+      "A velocidade da MJO diminui para zero sobre a África"
+    ],
+    "ans": 0,
+    "expl": "O oceano mais quente no Pacífico central/leste estende o ambiente convectivo favorável, permitindo que os pulsos da MJO avancem mais para o leste."
+  },
+  {
+    "id": 56,
+    "diff": "dificil",
+    "q": "Como a anomalia do Dipolo do Oceano Índico (IOD) em fase positiva interage frequentemente com o El Niño?",
+    "opts": [
+      "Tende a co-ocorrer e reforçar as anomalias de estiagem na Austrália e Indonésia",
+      "Cancela totalmente o El Niño em menos de 15 dias",
+      "Faz a temperatura da água da Antártica subir 15 °C",
+      "Não possui nenhuma correlação atmosférica ou oceânica"
+    ],
+    "ans": 0,
+    "expl": "Fases positivas do IOD costumam coincidir com o El Niño, com sinergia de seca severa no Sudeste Asiático e Oceania."
+  },
+  {
+    "id": 57,
+    "diff": "dificil",
+    "q": "O que caracteriza a 'barreira da previsibilidade de primavera' (Spring Predictability Barrier) nos modelos numéricos do ENOS?",
+    "opts": [
+      "A queda na acurácia preditiva dos modelos acoplados ao projetar a evolução do ENOS através da primavera boreal (março a maio)",
+      "A quebra mecânica de boias TAO devido a tufões no equador",
+      "A proibição legal da NOAA de emitir alertas na primavera",
+      "A falha de comunicação via satélite durante o degelo do Ártico"
+    ],
+    "ans": 0,
+    "expl": "A Primavera Boreal (março-maio) tem o menor acoplamento oceano-atmosfera no Pacífico, gerando grande incerteza na previsão dos modelos."
+  },
+  {
+    "id": 58,
+    "diff": "dificil",
+    "q": "Qual o papel das ondas de Rossby oceânicas no ciclo de término e reversão do El Niño?",
+    "opts": [
+      "Propagam-se para o oeste fora do equador e, ao refletirem na fronteira ocidental, retornam como ondas Kelvin frias de soerguimento",
+      "Absorvem a água do oceano diminuindo o nível do mar em 50 metros",
+      "Empurram icebergs da Antártica até o litoral do Peru",
+      "Invertem o campo magnético dos sedimentos abissais"
+    ],
+    "ans": 0,
+    "expl": "Na teoria do oscilador retardado (Delayed Action Oscillator), ondas de Rossby upwelling refletem na costa asiática virando ondas Kelvin que encerram o El Niño."
+  },
+  {
+    "id": 59,
+    "diff": "dificil",
+    "q": "No Brasil, durante o El Niño, o que acontece com a Zona de Convergência do Atlântico Sul (ZCAS)?",
+    "opts": [
+      "Tende a ter sua atuação deslocada ou inibida, favorecendo veranicos e chuvas irregulares no Sudeste e Centro-Oeste",
+      "Fica estacionada durante 6 meses ininterruptos sobre o sertão da Paraíba",
+      "Gera tempestades de neve na floresta amazônica",
+      "Transforma o Pantanal em geleira temporária"
+    ],
+    "ans": 0,
+    "expl": "O jato subtropical acelerado e a subsidência alterada perturbam a formação típica e persistente dos episódios de ZCAS."
+  },
+  {
+    "id": 60,
+    "diff": "dificil",
+    "q": "Em relação à 'inclinação da termoclina' sob condições de La Niña, qual é a inclinação zonal correta entre o Pacífico Oeste e Leste?",
+    "opts": [
+      "Extremamente inclinada: muito profunda no oeste (~150-200 m) e aflorando quase na superfície no leste (~15-30 m)",
+      "Totalmente horizontal e plana a 100 metros de profundidade em toda a bacia",
+      "Invertida: mais profunda no litoral do Peru do que na Indonésia",
+      "Desaparece, transformando o Pacífico em uma massa isotérmica homogênea"
+    ],
+    "ans": 0,
+    "expl": "Ventos alísios intensos empilham água quente no oeste (afundando a termoclina lá) e puxam água fria para cima no leste, gerando inclinação máxima."
+  }
+];
+
+    // Estado da Partida
+    let rodadaAtual = [];
+    let indiceAtual = 0;
+    let pontuacao = 0;
+    let respondeu = false;
+
+    // Função para embaralhar array (Fisher-Yates)
+    function shuffleArray(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    // Sorteia exatamente: 4 fáceis, 4 médias e 2 difíceis
+    function sortearRodada() {
+      const faceis = BANCO_QUESTOES.filter(q => q.diff === 'facil');
+      const medias = BANCO_QUESTOES.filter(q => q.diff === 'media');
+      const dificeis = BANCO_QUESTOES.filter(q => q.diff === 'dificil');
+
+      const sortFaceis = shuffleArray(faceis).slice(0, 4);
+      const sortMedias = shuffleArray(medias).slice(0, 4);
+      const sortDificeis = shuffleArray(dificeis).slice(0, 2);
+
+      // Combina mantendo ordem crescente ou embaralhada
+      // Vamos intercalar ou manter progressão didática: Fácil -> Médio -> Difícil
+      rodadaAtual = [...sortFaceis, ...sortMedias, ...sortDificeis];
+      indiceAtual = 0;
+      pontuacao = 0;
+    }
+
+    function iniciarQuiz() {
+      sortearRodada();
+      document.getElementById('screen-intro').classList.add('hidden');
+      document.getElementById('screen-result').classList.add('hidden');
+      document.getElementById('screen-quiz').classList.remove('hidden');
+      renderizarPergunta();
+    }
+
+    function reiniciarQuiz() {
+      iniciarQuiz();
+    }
+
+    function renderizarPergunta() {
+      respondeu = false;
+      const q = rodadaAtual[indiceAtual];
+      if (!q) return;
+
+      // Status
+      document.getElementById('quiz-step-text').innerText = `Pergunta ${indiceAtual + 1} de ${rodadaAtual.length}`;
+      document.getElementById('quiz-score-live').innerText = `${pontuacao} / ${indiceAtual} acertos`;
+      document.getElementById('quiz-progress-bar').style.width = `${((indiceAtual + 1) / rodadaAtual.length) * 100}%`;
+
+      // Badge de Dificuldade
+      const badge = document.getElementById('quiz-diff-badge');
+      if (q.diff === 'facil') {
+        badge.innerText = '🟢 Fácil';
+        badge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase bg-emerald-950 text-emerald-400 border border-emerald-500/40';
+      } else if (q.diff === 'media') {
+        badge.innerText = '🟡 Média';
+        badge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase bg-amber-950 text-amber-400 border border-amber-500/40';
+      } else {
+        badge.innerText = '🟣 Difícil';
+        badge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase bg-purple-950 text-purple-400 border border-purple-500/40';
+      }
+
+      // Enunciado
+      document.getElementById('quiz-question-text').innerText = q.q;
+
+      // Opções
+      const container = document.getElementById('quiz-options-container');
+      container.innerHTML = '';
+
+      const letras = ['A', 'B', 'C', 'D'];
+      q.opts.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'opt-btn w-full p-4 rounded-2xl bg-ocean-900/90 border border-ocean-700/80 text-left text-xs sm:text-sm text-slate-200 flex items-center gap-3.5';
+        btn.id = `opt-btn-${idx}`;
+        btn.innerHTML = `
+          <span class="w-7 h-7 rounded-xl bg-ocean-800 border border-ocean-600 flex items-center justify-center font-mono font-bold text-xs text-cyan-300 shrink-0">
+            ${letras[idx]}
+          </span>
+          <span class="flex-1">${opt}</span>
+        `;
+        btn.onclick = () => selecionarResposta(idx);
+        container.appendChild(btn);
+      });
+
+      // Reseta feedback e botão próxima
+      document.getElementById('quiz-feedback-box').classList.add('hidden');
+      const btnNext = document.getElementById('btn-next-question');
+      btnNext.disabled = true;
+      btnNext.className = 'px-6 py-3 rounded-xl bg-ocean-800 text-slate-500 font-bold text-xs uppercase tracking-wider transition flex items-center gap-2 cursor-not-allowed';
+    }
+
+    function selecionarResposta(escolha) {
+      if (respondeu) return;
+      respondeu = true;
+
+      const q = rodadaAtual[indiceAtual];
+      const correta = q.ans;
+      const feedbackBox = document.getElementById('quiz-feedback-box');
+      const feedbackTitle = document.getElementById('quiz-feedback-title');
+      const feedbackExpl = document.getElementById('quiz-feedback-expl');
+
+      // Desabilita botões e colore certo/errado
+      for (let i = 0; i < q.opts.length; i++) {
+        const btn = document.getElementById(`opt-btn-${i}`);
+        btn.disabled = true;
+        btn.classList.remove('hover:bg-ocean-800');
+
+        if (i === correta) {
+          btn.className = 'w-full p-4 rounded-2xl bg-emerald-950/90 border-2 border-emerald-400 text-left text-xs sm:text-sm text-emerald-100 flex items-center gap-3.5 shadow-glow-emerald';
+        } else if (i === escolha) {
+          btn.className = 'w-full p-4 rounded-2xl bg-rose-950/80 border-2 border-rose-500 text-left text-xs sm:text-sm text-rose-200 flex items-center gap-3.5';
+        } else {
+          btn.className = 'w-full p-4 rounded-2xl bg-ocean-950/50 border border-ocean-800/40 text-left text-xs sm:text-sm text-slate-500 flex items-center gap-3.5 opacity-60';
+        }
+      }
+
+      if (escolha === correta) {
+        pontuacao++;
+        feedbackBox.className = 'mt-6 p-4 rounded-2xl border border-emerald-500/40 bg-emerald-950/40 text-xs leading-relaxed text-emerald-200';
+        feedbackTitle.innerHTML = '<span class="text-emerald-400">✅ Resposta Correta!</span>';
+      } else {
+        feedbackBox.className = 'mt-6 p-4 rounded-2xl border border-rose-500/40 bg-rose-950/40 text-xs leading-relaxed text-rose-200';
+        feedbackTitle.innerHTML = '<span class="text-rose-400">❌ Resposta Incorreta</span>';
+      }
+
+      feedbackExpl.innerText = q.expl;
+      feedbackBox.classList.remove('hidden');
+
+      // Habilita botão próxima
+      const btnNext = document.getElementById('btn-next-question');
+      btnNext.disabled = false;
+      btnNext.className = 'px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-xs uppercase tracking-wider transition flex items-center gap-2 cursor-pointer shadow-glow-cyan';
+      
+      // Atualiza placar live
+      document.getElementById('quiz-score-live').innerText = `${pontuacao} / ${indiceAtual + 1} acertos`;
+    }
+
+    function proximaPergunta() {
+      if (indiceAtual < rodadaAtual.length - 1) {
+        indiceAtual++;
+        renderizarPergunta();
+      } else {
+        finalizarQuiz();
+      }
+    }
+
+    function finalizarQuiz() {
+      document.getElementById('screen-quiz').classList.add('hidden');
+      document.getElementById('screen-result').classList.remove('hidden');
+
+      const pct = Math.round((pontuacao / rodadaAtual.length) * 100);
+      document.getElementById('result-score').innerText = `${pontuacao} / ${rodadaAtual.length}`;
+      document.getElementById('result-percentage').innerText = `${pct}% de acertos`;
+
+      const badgeIcon = document.getElementById('result-badge-icon');
+      const title = document.getElementById('result-title');
+      const subtitle = document.getElementById('result-subtitle');
+      const comment = document.getElementById('result-comment');
+
+      if (pontuacao >= 9) {
+        badgeIcon.innerText = '🥇';
+        title.innerText = 'Excelente! Mestre do ENOS';
+        subtitle.innerText = 'Você demonstrou domínio profundo tanto sobre os fundamentos quanto sobre a física avançada do sistema.';
+        comment.innerHTML = '<strong>Avaliação do Observatório:</strong> Seus conhecimentos sobre circulação oceânica, teleconexões e impactos regionais estão no nível de um pesquisador em climatologia.';
+      } else if (pontuacao >= 7) {
+        badgeIcon.innerText = '🥈';
+        title.innerText = 'Muito Bom! Conhecimento Sólido';
+        subtitle.innerText = 'Você compreende perfeitamente a dinâmica entre o Oceano Pacífico e o clima do Brasil.';
+        comment.innerHTML = '<strong>Avaliação do Observatório:</strong> Ótimo desempenho nas questões básicas e intermediárias. Uma revisão sobre as ondas de Kelvin e Bjerknes vai te levar à nota máxima!';
+      } else if (pontuacao >= 5) {
+        badgeIcon.innerText = '🥉';
+        title.innerText = 'Bom Desempenho!';
+        subtitle.innerText = 'Você captou a essência de como o oceano dita as regras do clima no continente.';
+        comment.innerHTML = '<strong>Avaliação do Observatório:</strong> Bom início! Vale a pena revisitar a página de Dados e o Simulador 3D para consolidar as nuances de cada região do Brasil.';
+      } else {
+        badgeIcon.innerText = '📘';
+        title.innerText = 'Continue Explorando!';
+        subtitle.innerText = 'O sistema climático terrestre é complexo e fascinante.';
+        comment.innerHTML = '<strong>Dica de Estudo:</strong> Dê uma olhada nos infográficos de El Niño e La Niña na barra superior e tente novamente. Cada rodada sorteia perguntas inéditas!';
+      }
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,782 @@
+[
+  {
+    "id": 1,
+    "diff": "facil",
+    "q": "O que significa a sigla ENOS (ou ENSO em inglês)?",
+    "opts": [
+      "El Niño – Oscilação Sul",
+      "Energia Nuclear e Ondas do Sul",
+      "Estudo Nacional dos Oceanos do Sul",
+      "Efeito Noturno de Ondas Submarinas"
+    ],
+    "ans": 0,
+    "expl": "ENOS significa El Niño – Oscilação Sul, representando a interação entre o oceano e a atmosfera no Pacífico tropical."
+  },
+  {
+    "id": 2,
+    "diff": "facil",
+    "q": "Em qual oceano ocorre primariamente o fenômeno El Niño e La Niña?",
+    "opts": [
+      "Oceano Atlântico",
+      "Oceano Índico",
+      "Oceano Pacífico",
+      "Oceano Ártico"
+    ],
+    "ans": 2,
+    "expl": "O ENOS ocorre no Oceano Pacífico equatorial, influenciando o clima de todo o globo."
+  },
+  {
+    "id": 3,
+    "diff": "facil",
+    "q": "Qual é a principal característica da temperatura das águas durante o El Niño?",
+    "opts": [
+      "Águas anormalmente mais quentes no Pacífico equatorial",
+      "Congelamento total da costa do Peru",
+      "Resfriamento extremo das águas equatoriais",
+      "Aumento da temperatura apenas nos polos"
+    ],
+    "ans": 0,
+    "expl": "O El Niño representa a fase quente, onde as águas do Pacífico central e leste sofrem aquecimento anormal."
+  },
+  {
+    "id": 4,
+    "diff": "facil",
+    "q": "Qual é a principal característica da temperatura das águas durante a La Niña?",
+    "opts": [
+      "Aquecimento extremo das águas",
+      "Águas anormalmente mais frias no Pacífico equatorial",
+      "Aumento da evaporação no deserto do Atacama",
+      "Inalterabilidade das correntes marítimas"
+    ],
+    "ans": 1,
+    "expl": "A La Niña é a contrapartida fria, caracterizada por águas superficiais mais frias que a média."
+  },
+  {
+    "id": 5,
+    "diff": "facil",
+    "q": "Qual é o nome dos ventos constantes que sopram de leste para oeste na linha do Equador?",
+    "opts": [
+      "Ventos Alísios",
+      "Ventos Polares",
+      "Monções de Verão",
+      "Brisa Terrestre"
+    ],
+    "ans": 0,
+    "expl": "Os ventos alísios sopram constantemente dos trópicos em direção ao equador, de leste para oeste."
+  },
+  {
+    "id": 6,
+    "diff": "facil",
+    "q": "Durante o El Niño, qual costuma ser o impacto predominante de chuvas na Região Sul do Brasil?",
+    "opts": [
+      "Seca extrema e histórica",
+      "Aumento significativo das chuvas e tempestades",
+      "Diminuição das geadas e ausência de nuvens",
+      "Neve constante durante todo o verão"
+    ],
+    "ans": 1,
+    "expl": "No Sul do Brasil, o El Niño bloqueia frentes frias, provocando chuvas torrenciais e inundações frequentes."
+  },
+  {
+    "id": 7,
+    "diff": "facil",
+    "q": "Qual região do Brasil costuma sofrer com secas mais acentuadas durante eventos de El Niño?",
+    "opts": [
+      "Região Sul",
+      "Região Sudeste apenas no litoral",
+      "Semiárido do Nordeste e partes da Amazônia",
+      "Extremo sul do Rio Grande do Sul"
+    ],
+    "ans": 2,
+    "expl": "O El Niño altera a circulação atmosférica, inibindo a formação de nuvens no semiárido nordestino e no norte do país."
+  },
+  {
+    "id": 8,
+    "diff": "facil",
+    "q": "O que acontece com os ventos alísios durante a La Niña?",
+    "opts": [
+      "Eles desaparecem completamente",
+      "Eles mudam de direção e sopram para o norte",
+      "Eles ficam mais intensos e fortes que o normal",
+      "Eles aquecem a estratosfera"
+    ],
+    "ans": 2,
+    "expl": "Durante a La Niña, os ventos alísios se fortalecem vigorosamente, empurrando mais água quente para o oeste."
+  },
+  {
+    "id": 9,
+    "diff": "facil",
+    "q": "Qual país da América do Sul é diretamente vizinho às águas onde a temperatura do Pacífico muda no ENOS?",
+    "opts": [
+      "Peru",
+      "Argentina",
+      "Uruguai",
+      "Paraguai"
+    ],
+    "ans": 0,
+    "expl": "A costa do Peru e do Equador fica de frente para o Pacífico leste, sendo historicamente a primeira a registrar as anomalias."
+  },
+  {
+    "id": 10,
+    "diff": "facil",
+    "q": "Por que pescadores peruanos deram o nome de 'El Niño' a esse fenômeno?",
+    "opts": [
+      "Porque ele durava apenas algumas horas como uma criança",
+      "Por ocorrer tradicionalmente próximo à época do Natal (o 'Menino Jesus')",
+      "Em homenagem a uma embarcação famosa do século XIX",
+      "Porque afastava os peixes pequenos"
+    ],
+    "ans": 1,
+    "expl": "O aquecimento das águas costeiras costumava ser percebido no final de dezembro, sendo associado ao Menino Jesus ('El Niño')."
+  },
+  {
+    "id": 11,
+    "diff": "facil",
+    "q": "O que é 'ressurgência' no contexto dos oceanos?",
+    "opts": [
+      "A formação de tsunamis em alto-mar",
+      "A subida de águas profundas, frias e ricas em nutrientes à superfície",
+      "O desaparecimento de ondas na praia",
+      "O afundamento de placas tectônicas"
+    ],
+    "ans": 1,
+    "expl": "Ressurgência é o afloramento de águas frias do fundo oceânico, trazendo nutrientes fundamentais para a vida marinha."
+  },
+  {
+    "id": 12,
+    "diff": "facil",
+    "q": "Durante a La Niña, o que costuma acontecer com a chuva no semiárido do Nordeste brasileiro?",
+    "opts": [
+      "A seca se agrava de maneira inédita",
+      "Há maior tendência de chuvas abundantes e recarga de açudes",
+      "Ocorre neve no litoral",
+      "As chuvas cessam por completo durante 5 anos"
+    ],
+    "ans": 1,
+    "expl": "A La Niña favorece a descida da ZCIT, propiciando boas chuvas na quadra chuvosa do semiárido nordestino."
+  },
+  {
+    "id": 13,
+    "diff": "facil",
+    "q": "O que acontece com os ventos alísios durante o El Niño clássico?",
+    "opts": [
+      "Eles enfraquecem ou até diminuem de intensidade",
+      "Eles dobram de velocidade em direção ao Peru",
+      "Eles congelam a camada de ozônio",
+      "Eles sopram apenas de norte para sul"
+    ],
+    "ans": 0,
+    "expl": "No El Niño, o gradiente de pressão diminui e os ventos alísios enfraquecem, permitindo que a água quente retorne ao leste."
+  },
+  {
+    "id": 14,
+    "diff": "facil",
+    "q": "Qual é a camada que separa as águas quentes superficiais das águas profundas e frias?",
+    "opts": [
+      "Atmosfera",
+      "Termoclina",
+      "Litosfera",
+      "Cromosfera"
+    ],
+    "ans": 1,
+    "expl": "A termoclina é a zona de transição térmica acentuada entre a camada superficial aquecida e as águas frias abissais."
+  },
+  {
+    "id": 15,
+    "diff": "facil",
+    "q": "No Brasil, qual setor econômico é altamente impactado por variações nas safras causadas pelo ENOS?",
+    "opts": [
+      "Agronegócio",
+      "Indústria de semicondutores",
+      "Mineração de carvão mineral",
+      "Setor espacial"
+    ],
+    "ans": 0,
+    "expl": "A agricultura depende diretamente do regime de chuvas e temperatura, sofrendo impactos diretos do ENOS."
+  },
+  {
+    "id": 16,
+    "diff": "facil",
+    "q": "A sigla TSM, muito usada nas análises oceanográficas, significa:",
+    "opts": [
+      "Temperatura da Superfície do Mar",
+      "Tempo Solar Médio",
+      "Tensão Salina Marinha",
+      "Transição Sazonal Meteorológica"
+    ],
+    "ans": 0,
+    "expl": "TSM significa Temperatura da Superfície do Mar (em inglês, SST)."
+  },
+  {
+    "id": 17,
+    "diff": "facil",
+    "q": "Qual órgão científico brasileiro é referência na previsão e monitoramento climático do ENOS?",
+    "opts": [
+      "CPTEC/INPE",
+      "IBGE",
+      "ANATEL",
+      "CONAB apenas"
+    ],
+    "ans": 0,
+    "expl": "O Centro de Previsão de Tempo e Estudos Climáticos do INPE (CPTEC/INPE) é referência na modelagem climática."
+  },
+  {
+    "id": 18,
+    "diff": "facil",
+    "q": "Durante eventos de La Niña, o que costuma ocorrer no verão do Rio Grande do Sul?",
+    "opts": [
+      "Enchentes ininterruptas",
+      "Maior frequência de estiagens e déficit de chuva",
+      "Temperaturas polares constantes no litoral",
+      "Nenhuma alteração climática"
+    ],
+    "ans": 1,
+    "expl": "Na La Niña, as frentes frias passam rápido ou são bloqueadas mais ao sul, gerando secas no verão gaúcho."
+  },
+  {
+    "id": 19,
+    "diff": "facil",
+    "q": "O El Niño e a La Niña são fenômenos meteorológicos:",
+    "opts": [
+      "Locais, restritos a uma praia específica",
+      "Globais, com repercussões de teleconexão em todo o planeta",
+      "Causados exclusivamente por usinas nucleares",
+      "Que ocorrem em ciclos diários (dia e noite)"
+    ],
+    "ans": 1,
+    "expl": "São fenômenos de escala global que afetam o clima de múltiplos continentes via teleconexão atmosférica."
+  },
+  {
+    "id": 20,
+    "diff": "facil",
+    "q": "Qual é a agência oceânica e atmosférica dos EUA amplamente citada nos dados do projeto?",
+    "opts": [
+      "NOAA",
+      "NASA apenas",
+      "FBI",
+      "CERN"
+    ],
+    "ans": 0,
+    "expl": "A NOAA (National Oceanic and Atmospheric Administration) monitora e publica os índices oficiais do ENOS."
+  },
+  {
+    "id": 21,
+    "diff": "facil",
+    "q": "Durante a La Niña, a ressurgência de águas ricas em nutrientes na costa do Peru:",
+    "opts": [
+      "É fortalecida, favorecendo a pesca",
+      "É bloqueada e cessa",
+      "Congela os barcos no porto",
+      "Transforma a água em vapor"
+    ],
+    "ans": 0,
+    "expl": "A La Niña potencializa a ressurgência peruana, trazendo abundância de plâncton e cardumes."
+  },
+  {
+    "id": 22,
+    "diff": "facil",
+    "q": "Em condições normais do Pacífico, onde a maior piscina de água quente se acumula?",
+    "opts": [
+      "No extremo oeste (perto da Indonésia e Austrália)",
+      "Colada na praia de Lima, no Peru",
+      "No Polo Norte",
+      "No Estreito de Magalhães"
+    ],
+    "ans": 0,
+    "expl": "Os alísios normais empurram as águas aquecidas pelo sol para o Pacífico ocidental (Warm Pool)."
+  },
+  {
+    "id": 23,
+    "diff": "facil",
+    "q": "Como o El Niño afeta a ocorrência de queimadas e incêndios na Amazônia?",
+    "opts": [
+      "Diminui as queimadas devido a tempestades torrenciais",
+      "Aumenta o risco devido à seca florestal e redução das chuvas",
+      "Não tem qualquer relação",
+      "Apaga focos de fogo com ventos gelados"
+    ],
+    "ans": 1,
+    "expl": "A estiagem prolongada provocada pelo El Niño resseca a vegetação amazônica, aumentando os focos de incêndio."
+  },
+  {
+    "id": 24,
+    "diff": "facil",
+    "q": "Qual índice meteorológico mede a diferença de pressão entre o Taiti e Darwin (Austrália)?",
+    "opts": [
+      "SOI (Índice de Oscilação Sul)",
+      "Índice de Massa Corporal",
+      "Escala Richter",
+      "Índice Dow Jones"
+    ],
+    "ans": 0,
+    "expl": "O SOI (Southern Oscillation Index) baseia-se na flutuação da pressão atmosférica no nível do mar entre Taiti e Darwin."
+  },
+  {
+    "id": 25,
+    "diff": "facil",
+    "q": "Qual recurso energético brasileiro sofre grande oscilação de geração conforme os ciclos do ENOS?",
+    "opts": [
+      "Energia Hidrelétrica (vazão de reservatórios)",
+      "Energia Geotérmica profunda",
+      "Energia Nuclear",
+      "Carvão importado"
+    ],
+    "ans": 0,
+    "expl": "O regime de chuvas abastece as bacias hidrográficas que movimentam as hidrelétricas do país."
+  },
+  {
+    "id": 26,
+    "diff": "media",
+    "q": "Qual célula de circulação atmosférica zonal ao longo do equador é alterada diretamente pelo ENOS?",
+    "opts": [
+      "Circulação de Walker",
+      "Célula de Hadley polar",
+      "Circulação de Coriolis",
+      "Célula de Ferrel tropical"
+    ],
+    "ans": 0,
+    "expl": "A Circulação de Walker é a circulação zonal leste-oeste no Pacífico equatorial descrita por Sir Gilbert Walker."
+  },
+  {
+    "id": 27,
+    "diff": "media",
+    "q": "Na região Niño 3.4, qual desvio mínimo contínuo de temperatura é exigido para classificar um evento El Niño?",
+    "opts": [
+      "Anomalia de pelo menos +0,5 °C por vários meses",
+      "Anomalia de pelo menos +5,0 °C em um único dia",
+      "Anomalia negativa de -1,5 °C",
+      "Apenas quando a temperatura ultrapassa 40 °C"
+    ],
+    "ans": 0,
+    "expl": "A NOAA define El Niño quando o índice ONI atinge ou supera +0,5 °C por no mínimo cinco trimestres móveis consecutivos."
+  },
+  {
+    "id": 28,
+    "diff": "media",
+    "q": "O que acontece com a termoclina no Pacífico Leste (América do Sul) durante um episódio intenso de El Niño?",
+    "opts": [
+      "Ela se aprofunda (desce para ~120 m)",
+      "Ela sobe para a superfície a 0 metros",
+      "Ela se dissipa e vira gelo",
+      "Ela permanece rigorosamente constante a 10 metros"
+    ],
+    "ans": 0,
+    "expl": "Com o colapso dos ventos alísios, a água quente se espalha para o leste, aprofundando a termoclina na costa sul-americana."
+  },
+  {
+    "id": 29,
+    "diff": "media",
+    "q": "Como o El Niño influencia a corrente de jato (Jet Stream) subtropical que passa pela América do Sul?",
+    "opts": [
+      "Intensifica e estabiliza a corrente de jato sobre o Sul do Brasil, bloqueando frentes frias",
+      "Desvia o jato totalmente para a Antártica",
+      "Elimina a corrente de jato durante dois anos",
+      "Faz o jato circular no sentido horário no equador"
+    ],
+    "ans": 0,
+    "expl": "O El Niño fortalece o jato subtropical, gerando bloqueios atmosféricos que retêm tempestades sobre o Sul do Brasil."
+  },
+  {
+    "id": 30,
+    "diff": "media",
+    "q": "O que é a ZCIT (Zona de Convergência Intertropical) e qual seu papel no Nordeste durante La Niña?",
+    "opts": [
+      "Banda de nuvens equatoriais que desce mais ao sul, trazendo chuvas abundantes ao Ceará e sertão",
+      "Uma corrente marinha congelada que impede a chuva",
+      "Um ciclone extratropical exclusivo do litoral de São Paulo",
+      "Uma cordilheira submarina"
+    ],
+    "ans": 0,
+    "expl": "A ZCIT é o principal sistema meteorológico indutor de chuvas no norte do Nordeste; na La Niña ela é atraída para latitudes mais austrais."
+  },
+  {
+    "id": 31,
+    "diff": "media",
+    "q": "Qual evento ficou conhecido na climatologia como 'La Niña Triple-Dip'?",
+    "opts": [
+      "O episódio consecutivo de três anos de La Niña entre 2020 e 2023",
+      "Três tempestades de neve simultâneas no deserto",
+      "O resfriamento de três oceanos ao mesmo tempo",
+      "Um evento que só ocorre a cada 3.000 anos"
+    ],
+    "ans": 0,
+    "expl": "Entre 2020 e 2023 ocorreu uma rara La Niña tripla ('triple-dip'), com três invernos consecutivos sob a fase fria."
+  },
+  {
+    "id": 32,
+    "diff": "media",
+    "q": "Como se comporta o Índice de Oscilação Sul (SOI) durante a fase de El Niño?",
+    "opts": [
+      "Assume valores persistentemente negativos (< -0,8)",
+      "Assume valores persistentemente positivos (> +1,5)",
+      "Permanece exatamente igual a zero",
+      "Oscila entre 100 e 200"
+    ],
+    "ans": 0,
+    "expl": "Valores negativos de SOI indicam pressão anormalmente baixa no Pacífico leste e alta na Indonésia, caracterizando El Niño."
+  },
+  {
+    "id": 33,
+    "diff": "media",
+    "q": "O que são as ondas Kelvin oceânicas no contexto do desencadeamento de um El Niño?",
+    "opts": [
+      "Pulsos de ondas quentes subsuperficiais que se propagam de oeste para leste ao longo do equador",
+      "Ondas sonoras produzidas por baleias no Atlântico",
+      "Tsunamis de gelo no oceano Antártico",
+      "Ventos que sopram acima de 300 km/h"
+    ],
+    "ans": 0,
+    "expl": "Ondas Kelvin oceânicas transportam água quente subsuperficial do Pacífico oeste até a costa sul-americana após rajadas de vento de oeste."
+  },
+  {
+    "id": 34,
+    "diff": "media",
+    "q": "Qual é a principal rede de boias ancoradas no Pacífico tropical mencionada no site?",
+    "opts": [
+      "Rede TAO / TRITON",
+      "Rede GPS Brasil",
+      "Sistema Argos de Satélites Órbita Baixa",
+      "Rede Sísmica Global"
+    ],
+    "ans": 0,
+    "expl": "A rede TAO/TRITON mantém dezenas de boias fundeadas no Pacífico para monitorar o acoplamento oceano-atmosfera."
+  },
+  {
+    "id": 35,
+    "diff": "media",
+    "q": "O que os satélites de altimetria radar (como Sentinel-6 e Jason-3) medem para prever o ENOS?",
+    "opts": [
+      "A altura da superfície do mar com precisão milimétrica",
+      "A temperatura das pedras nas montanhas do Peru",
+      "A quantidade de barcos pesqueiros",
+      "O teor de sal na chuva"
+    ],
+    "ans": 0,
+    "expl": "Água quente se expande termicamente, elevando a altura da superfície do mar, o que é detectado pelos altímetros orbitais."
+  },
+  {
+    "id": 36,
+    "diff": "media",
+    "q": "No Sudeste brasileiro, qual impacto térmico costuma ser mais evidente durante episódios fortes de El Niño?",
+    "opts": [
+      "Frequência aumentada de ondas de calor no verão e inverno mais ameno",
+      "Congelamento dos reservatórios em Minas Gerais",
+      "Queda contínua de 10°C nas médias anuais",
+      "Ausência absoluta de radiação solar"
+    ],
+    "ans": 0,
+    "expl": "O El Niño favorece bloqueios que desviam frentes frias, provocando ondas de calor persistentes no Sudeste."
+  },
+  {
+    "id": 37,
+    "diff": "media",
+    "q": "Durante o 'Super El Niño' de 2015-2016, que recorde térmico de anomalia no índice Niño 3.4 foi registrado?",
+    "opts": [
+      "Aproximadamente +2,6 °C",
+      "Exatamente +0,1 °C",
+      "+8,4 °C",
+      "-3,2 °C"
+    ],
+    "ans": 0,
+    "expl": "O evento de 2015-2016 atingiu anomalia trimestral de +2,6 °C, empatando ou superando o lendário evento de 1997-1998."
+  },
+  {
+    "id": 38,
+    "diff": "media",
+    "q": "O que acontece com os flutuadores do programa internacional Argo?",
+    "opts": [
+      "Mergulham até 2.000 m a cada 10 dias e transmitem perfis verticais de temperatura e salinidade",
+      "Ficam fixos amarrados na beira das praias",
+      "São aviões que sobrevoam os furacões",
+      "São balões meteorológicos de alta altitude"
+    ],
+    "ans": 0,
+    "expl": "Os quase 4.000 flutuadores Argo realizam ciclos verticais de mergulho até 2.000 metros para medir temperatura e salinidade."
+  },
+  {
+    "id": 39,
+    "diff": "media",
+    "q": "Como o El Niño afeta as monções de chuva na Índia e Sudeste Asiático?",
+    "opts": [
+      "Tende a enfraquecer as chuvas de monção, gerando estiagens",
+      "Duplica o volume das chuvas em todo o continente indiano",
+      "Não possui qualquer teleconexão com a Ásia",
+      "Causa congelamento no Oceano Índico"
+    ],
+    "ans": 0,
+    "expl": "O deslocamento da convecção para o Pacífico central inibe a convecção monçônica na Índia, frequentemente reduzindo as chuvas."
+  },
+  {
+    "id": 40,
+    "diff": "media",
+    "q": "Por que o branqueamento de corais em escala global costuma coincidir com anos de Super El Niño?",
+    "opts": [
+      "Pelo estresse térmico prolongado causado pelas altas temperaturas marinhas nos oceanos tropicais",
+      "Por causa de tempestades de granizo no mar",
+      "Pela proliferação de tubarões",
+      "Pela falta de sal na água"
+    ],
+    "ans": 0,
+    "expl": "O calor extremo acumulado no oceano faz com que os corais expulsem suas microalgas simbióticas, levando ao branqueamento."
+  },
+  {
+    "id": 41,
+    "diff": "media",
+    "q": "Na Região Centro-Oeste do Brasil, qual é o impacto mais comum observado no início da safra sob El Niño?",
+    "opts": [
+      "Atraso e irregularidade nas primeiras chuvas de primavera para o plantio da soja",
+      "Neve constante nos planaltos do Mato Grosso",
+      "Inundações universais em todas as cidades",
+      "Nenhum impacto perceptível"
+    ],
+    "ans": 0,
+    "expl": "O El Niño pode desorganizar a transição seca-chuva no Centro-Oeste, atrasando o calendário ideal de plantio."
+  },
+  {
+    "id": 42,
+    "diff": "media",
+    "q": "O que ocorre com a circulação atmosférica sobre o norte do Brasil durante o El Niño?",
+    "opts": [
+      "Movimentos descendentes de ar (subsidência) que inibem a formação de nuvens de chuva",
+      "Movimentos ascendentes violentos gerando tempestades diárias",
+      "Correntes de jato ao nível do solo",
+      "Inversão térmica polar"
+    ],
+    "ans": 0,
+    "expl": "O ramo descendente da Célula de Walker alterada atua sobre a Amazônia/Nordeste, impedindo a convecção profunda."
+  },
+  {
+    "id": 43,
+    "diff": "media",
+    "q": "Qual região do Oceano Pacífico é considerada o termômetro oficial do Índice Oceânico Niño (ONI)?",
+    "opts": [
+      "Região Niño 3.4 (Pacífico Centro-Leste)",
+      "Baía de Guanabara",
+      "Costa da Califórnia (Niño 0)",
+      "Fossa das Marianas"
+    ],
+    "ans": 0,
+    "expl": "A região Niño 3.4 (5°N–5°S, 170°W–120°W) é o padrão internacional adotado para calcular o índice ONI."
+  },
+  {
+    "id": 44,
+    "diff": "media",
+    "q": "Por que a atividade pesqueira no Peru entra em crise durante o El Niño?",
+    "opts": [
+      "Porque a água quente superficial e a termoclina profunda barram a ressurgência de águas frias com nutrientes",
+      "Porque os peixes migram todos para a Amazônia",
+      "Porque os barcos peruanos perdem os motores",
+      "Porque a água se torna doce"
+    ],
+    "ans": 0,
+    "expl": "Sem a subida de nutrientes trazida pela ressurgência fria, o fitoplâncton decai e a anchoveta peruana migra ou morre."
+  },
+  {
+    "id": 45,
+    "diff": "media",
+    "q": "O que é o fenômeno da 'teleconexão' climática?",
+    "opts": [
+      "Conexão entre anomalias atmosféricas em regiões distantes do planeta através de ondas planetárias",
+      "Um cabo submarino de internet que liga oceanos",
+      "A previsão do tempo via televisão",
+      "Um satélite geoestacionário"
+    ],
+    "ans": 0,
+    "expl": "Teleconexão é a ligação climática em que uma anomalia em uma área (ex: Pacífico) afeta o clima a milhares de quilômetros de distância."
+  },
+  {
+    "id": 46,
+    "diff": "media",
+    "q": "Em relação à formação de furacões no Oceano Atlântico Norte, qual o efeito do El Niño?",
+    "opts": [
+      "Tende a inibir furacões devido ao aumento do cisalhamento vertical do vento no Caribe",
+      "Provoca recordes históricos de furacões no Caribe",
+      "Não afeta o Atlântico de forma alguma",
+      "Faz os furacões girarem no sentido horário"
+    ],
+    "ans": 0,
+    "expl": "O El Niño aumenta o vento em altitude (cisalhamento) sobre o Atlântico tropical, desestruturando a formação de furacões."
+  },
+  {
+    "id": 47,
+    "diff": "media",
+    "q": "Em relação à formação de furacões no Oceano Atlântico Norte, qual o efeito da La Niña?",
+    "opts": [
+      "Tende a favorecer temporadas mais ativas e intensas por reduzir o cisalhamento do vento",
+      "Extingue completamente as tempestades tropicais",
+      "Congela o Golfo do México",
+      "Desvia todas as tempestades para a Europa"
+    ],
+    "ans": 0,
+    "expl": "A La Niña reduz o cisalhamento sobre o Atlântico, criando condições ideais para a gênese de furacões mais numerosos."
+  },
+  {
+    "id": 48,
+    "diff": "media",
+    "q": "Durante o El Niño de 1997-1998, qual bacia hidrográfica brasileira sofreu cheias históricas severas?",
+    "opts": [
+      "Bacia do Rio Uruguai e Rio Jacuí no Rio Grande do Sul",
+      "Bacia do Rio São Francisco",
+      "Bacia do Rio Parnaíba no Piauí",
+      "Bacia do Rio Branco em Roraima"
+    ],
+    "ans": 0,
+    "expl": "O evento de 1997/98 despejou volumes pluviométricos extremos na Região Sul, transbordando rios no RS e SC."
+  },
+  {
+    "id": 49,
+    "diff": "media",
+    "q": "Como os episódios de La Niña costumam influenciar a quadra chuvosa do estado do Ceará?",
+    "opts": [
+      "Favorecem chuvas acima da média histórica e recarga hídrica de reservatórios como o Castanhão",
+      "Provocam secas decenais sem chuva",
+      "Impedem a passagem de nuvens",
+      "Causam geadas no sertão"
+    ],
+    "ans": 0,
+    "expl": "A La Niña historicamente é correlacionada a invernos chuvosos no Ceará e recarga essencial de água."
+  },
+  {
+    "id": 50,
+    "diff": "media",
+    "q": "Qual é a periodicidade média típica do ciclo do ENOS (entre uma fase e outra)?",
+    "opts": [
+      "Entre 2 e 7 anos, de forma quase-periódica e irregular",
+      "Exatamente a cada 365 dias",
+      "A cada 100 anos rigorosamente",
+      "A cada 28 dias conforme a lua"
+    ],
+    "ans": 0,
+    "expl": "O ENOS não é estritamente periódico; suas oscilações ocorrem em ciclos irregulares que variam de 2 a 7 anos."
+  },
+  {
+    "id": 51,
+    "diff": "dificil",
+    "q": "Na dinâmica do 'oscilador de recarga' (Recharge Oscillator Model), como o calor equatorial é esvaziado antes da transição para La Niña?",
+    "opts": [
+      "Pelo transporte meridional de Sverdrup divergente, que descarrega o calor da faixa equatorial para latitudes subtropicais",
+      "Pela precipitação de granizo sobre a Linha do Equador que resfria a crosta",
+      "Pela evaporação completa de 10% da água do Pacífico",
+      "Pela absorção térmica do manto terrestre através de dorsais submarinas"
+    ],
+    "ans": 0,
+    "expl": "No modelo de oscilador de recarga de Jin (1997), ventos anômalos causam divergência meridional de massa de água quente, descarregando o calor equatorial."
+  },
+  {
+    "id": 52,
+    "diff": "dificil",
+    "q": "O que diferencia um 'El Niño Canônico' (do leste) de um 'El Niño Modoki' (do Pacífico Central)?",
+    "opts": [
+      "No Modoki, o pico de anomalia quente ocorre no Pacífico Central, flanqueado por águas mais frias a leste e a oeste",
+      "No Modoki, o aquecimento ocorre apenas na atmosfera e não na água",
+      "O Modoki dura menos de 24 horas",
+      "O El Niño Canônico ocorre exclusivamente no Oceano Atlântico Sul"
+    ],
+    "ans": 0,
+    "expl": "O El Niño Modoki (Ashok et al., 2007) apresenta uma estrutura tripolar com aquecimento centrado no Pacífico Central (Niño 4/3.4) e impactos climáticos distintos."
+  },
+  {
+    "id": 53,
+    "diff": "dificil",
+    "q": "Qual mecanismo de feedback positivo entre o oceano e a atmosfera sustenta a amplificação do El Niño?",
+    "opts": [
+      "Feedback de Bjerknes",
+      "Efeito Estufa Runaway",
+      "Feedback de Albedo de Charney",
+      "Ressonância Schumann de Alta Frequência"
+    ],
+    "ans": 0,
+    "expl": "O Feedback de Bjerknes descreve o ciclo vicioso onde águas quentes enfraquecem os alísios, o que por sua vez empurra mais água quente para leste."
+  },
+  {
+    "id": 54,
+    "diff": "dificil",
+    "q": "Como as rajadas de ventos de oeste ('Westerly Wind Bursts' - WWBs) na bacia ocidental precipitam um El Niño?",
+    "opts": [
+      "Geram ondas Kelvin oceânicas de afundamento que suprimem a termoclina ao viajarem para leste",
+      "Empurram o continente australiano para o norte",
+      "Resfriam a superfície marinha a -5 °C instantaneamente",
+      "Bloqueiam a rotação da Terra por alguns milissegundos"
+    ],
+    "ans": 0,
+    "expl": "As WWBs geram ondas Kelvin equatoriais downwelling que aprofundam a termoclina e impedem a ressurgência fria ao atingirem a costa leste."
+  },
+  {
+    "id": 55,
+    "diff": "dificil",
+    "q": "Qual o impacto típico do El Niño sobre a Oscilação Madden-Julian (MJO)?",
+    "opts": [
+      "A convecção da MJO tende a se propagar mais a leste da Linha Internacional de Mudança de Data",
+      "A MJO é totalmente destruída e deixa de existir no globo",
+      "A MJO passa a orbitar apenas os polos norte e sul",
+      "A velocidade da MJO diminui para zero sobre a África"
+    ],
+    "ans": 0,
+    "expl": "O oceano mais quente no Pacífico central/leste estende o ambiente convectivo favorável, permitindo que os pulsos da MJO avancem mais para o leste."
+  },
+  {
+    "id": 56,
+    "diff": "dificil",
+    "q": "Como a anomalia do Dipolo do Oceano Índico (IOD) em fase positiva interage frequentemente com o El Niño?",
+    "opts": [
+      "Tende a co-ocorrer e reforçar as anomalias de estiagem na Austrália e Indonésia",
+      "Cancela totalmente o El Niño em menos de 15 dias",
+      "Faz a temperatura da água da Antártica subir 15 °C",
+      "Não possui nenhuma correlação atmosférica ou oceânica"
+    ],
+    "ans": 0,
+    "expl": "Fases positivas do IOD costumam coincidir com o El Niño, com sinergia de seca severa no Sudeste Asiático e Oceania."
+  },
+  {
+    "id": 57,
+    "diff": "dificil",
+    "q": "O que caracteriza a 'barreira da previsibilidade de primavera' (Spring Predictability Barrier) nos modelos numéricos do ENOS?",
+    "opts": [
+      "A queda na acurácia preditiva dos modelos acoplados ao projetar a evolução do ENOS através da primavera boreal (março a maio)",
+      "A quebra mecânica de boias TAO devido a tufões no equador",
+      "A proibição legal da NOAA de emitir alertas na primavera",
+      "A falha de comunicação via satélite durante o degelo do Ártico"
+    ],
+    "ans": 0,
+    "expl": "A Primavera Boreal (março-maio) tem o menor acoplamento oceano-atmosfera no Pacífico, gerando grande incerteza na previsão dos modelos."
+  },
+  {
+    "id": 58,
+    "diff": "dificil",
+    "q": "Qual o papel das ondas de Rossby oceânicas no ciclo de término e reversão do El Niño?",
+    "opts": [
+      "Propagam-se para o oeste fora do equador e, ao refletirem na fronteira ocidental, retornam como ondas Kelvin frias de soerguimento",
+      "Absorvem a água do oceano diminuindo o nível do mar em 50 metros",
+      "Empurram icebergs da Antártica até o litoral do Peru",
+      "Invertem o campo magnético dos sedimentos abissais"
+    ],
+    "ans": 0,
+    "expl": "Na teoria do oscilador retardado (Delayed Action Oscillator), ondas de Rossby upwelling refletem na costa asiática virando ondas Kelvin que encerram o El Niño."
+  },
+  {
+    "id": 59,
+    "diff": "dificil",
+    "q": "No Brasil, durante o El Niño, o que acontece com a Zona de Convergência do Atlântico Sul (ZCAS)?",
+    "opts": [
+      "Tende a ter sua atuação deslocada ou inibida, favorecendo veranicos e chuvas irregulares no Sudeste e Centro-Oeste",
+      "Fica estacionada durante 6 meses ininterruptos sobre o sertão da Paraíba",
+      "Gera tempestades de neve na floresta amazônica",
+      "Transforma o Pantanal em geleira temporária"
+    ],
+    "ans": 0,
+    "expl": "O jato subtropical acelerado e a subsidência alterada perturbam a formação típica e persistente dos episódios de ZCAS."
+  },
+  {
+    "id": 60,
+    "diff": "dificil",
+    "q": "Em relação à 'inclinação da termoclina' sob condições de La Niña, qual é a inclinação zonal correta entre o Pacífico Oeste e Leste?",
+    "opts": [
+      "Extremamente inclinada: muito profunda no oeste (~150-200 m) e aflorando quase na superfície no leste (~15-30 m)",
+      "Totalmente horizontal e plana a 100 metros de profundidade em toda a bacia",
+      "Invertida: mais profunda no litoral do Peru do que na Indonésia",
+      "Desaparece, transformando o Pacífico em uma massa isotérmica homogênea"
+    ],
+    "ans": 0,
+    "expl": "Ventos alísios intensos empilham água quente no oeste (afundando a termoclina lá) e puxam água fria para cima no leste, gerando inclinação máxima."
+  }
+]
