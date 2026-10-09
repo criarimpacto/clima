@@ -1,0 +1,209 @@
+## Especificação Técnica UI/UX – Terceira Página Principal ("El Niño")
+
+
+
+### 1. Barra de Navegação Superior (`Navbar`)
+
+* **Componente:** `Navbar` fixo (`sticky/fixed header`) com fundo escuro semi-transparente e efeito de desfoque (`backdrop-blur`).
+
+
+* **Estado Ativo:** O item **"El Niño"** assume o estado `active` com indicador visual de seleção (ícone de chama destacado e sublinhado/glow azul).
+
+
+
+---
+
+### 2. Cabeçalho da Página (`Page Header`)
+
+* **Ícone Principal:** Ícone vetorial de chama (`FlameIcon`) em cor laranja/vermelho em destaque à esquerda do título.
+
+
+* **Título Principal:** **EL NIÑO** em tipografia sem serifa, tamanho grande e cor branca.
+
+
+* **Subtítulo:** *"Quando as águas do Pacífico equatorial ficam anormalmente mais quentes, o sistema oceano-atmosfera muda."*
+
+* **Fluxo de Causalidade (Breadcrumb / Chain Component):**
+* Componente visual horizontal exibindo a sequência de impacto: `PACÍFICO` $\rightarrow$ `ATMOSFERA` $\rightarrow$ `CLIMA`.
+
+
+* Cada etapa conta com seu respectivo ícone (Onda, Vento, Globo) e seta indicativa de fluxo.
+
+
+
+
+
+---
+
+### 3. Seção Interativa Principal (Simulador e Análise do El Niño)
+
+#### A. Ilha Visualizadora Diagramática 3D / Animação (Esquerda)
+
+* **Componente:** Visualizador interativo (Canvas WebGL / Three.js) exibindo o corte transversal do Oceano Pacífico e da atmosfera.
+
+
+* **Elementos Visuais e Comportamento Dinâmico:**
+1. **Superfície do Oceano (Anomalia Térmica):**
+* Camada de água quente representada por um gradiente em tons vermelho/laranja cobrindo as regiões central e leste do Oceano Pacífico.
+
+
+
+
+2. **Ventos Alísios (Animação de Vento):**
+* Vetores/setas animadas representando a circulação atmosférica.
+
+
+* **Estado El Niño:** As setas ficam menores, opacas ou com animação desacelerada, sinalizando o enfraquecimento dos ventos que sopram de leste para oeste.
+
+
+
+
+3. **Ressurgência (Costa da América do Sul):**
+* Vetor curvo na costa da América do Sul.
+
+
+* **Estado El Niño:** A seta vertical de ressurgência é reduzida drasticamente para indicar o bloqueio do afloramento de águas frias profundas.
+
+
+
+
+4. **Células de Circulação Atmosférica:**
+* Arcos com setas demonstrando o movimento das massas de ar e nuvens de tempestade deslocadas em direção ao centro do oceano Pacífico.
+
+
+
+
+
+
+
+#### B. Painel Explicativo e Alternador de Estado (`Interactive Panel / Switch`) (Direita)
+
+* **Estrutura:** Container escuro translúcido com borda suave.
+
+
+* **Título do Painel:** **O QUE MUDOU?**
+
+* **Lista Sequencial de Causa e Efeito:**
+* **01 — O OCEANO AQUECE:** *"A temperatura da superfície do Pacífico equatorial aumenta."*
+
+* **02 — OS VENTOS MUDAM:** *"Os ventos alísios tendem a enfraquecer."*
+
+* **03 — A ATMOSFERA RESPONDE:** *"A circulação atmosférica e os padrões de chuva podem se modificar."*
+
+
+
+* **Componente Alternador de Estado (`Segmented Control / Toggle Switch`):**
+* **Botões:** `NORMAL` $\leftrightarrow$ `EL NIÑO`.
+
+
+* **Lógica de Estado (`React State`):**
+* Quando `state === "NORMAL"`: O diagrama 3D exibe os ventos alísios fortes, a água quente concentrada no oeste (Austrália) e ressurgência ativa na América do Sul.
+
+
+* Quando `state === "EL NIÑO"`: O diagrama 3D aplica transição suave (fading/morphing) para o cenário de aquecimento no Pacífico central/leste e enfraquecimento dos ventos.
+
+
+
+
+
+
+
+---
+
+### 4. Seção Intermediária e Cards de Impactos Globais
+
+* **Título da Seção:** **E O RESTO DO PLANETA?** acompanhado do ícone do globo terrestre.
+
+
+* **Subtítulo:** *"Os efeitos do El Niño não são iguais em todos os lugares. A intensidade e o padrão das alterações podem variar de um episódio para outro."*
+
+* **Grid de Cards Interativos (Atalhos para Páginas Secundárias de Aprofundamento):**
+* **Layout:** Grid de 4 colunas responsivas (`grid-cols-1 sm:grid-cols-2 lg:grid-cols-4`).
+
+
+* **Comportamento Interativo (Essencial para Base44):** Cada card é um **botão de navegação completo** (`CardButton` / `<Link>`). Ao passar o mouse (*hover*), o card eleva-se suavemente, a borda ganha destaque e a cor do ícone se intensifica.
+
+
+* **Mapeamento de Botões e Rotas Secundárias:**
+1. **Card CHUVAS:**
+* Ícone: Nuvem com chuva.
+
+
+* Título: **CHUVAS**.
+
+
+* Descrição: *"Alterações nos padrões de precipitação."*
+
+* Rota: `/secundaria/el-nino/chuvas`.
+
+
+
+
+2. **Card TEMPERATURA:**
+* Ícone: Termômetro.
+
+
+* Título: **TEMPERATURA**.
+
+
+* Descrição: *"Mudanças nas condições térmicas em diferentes regiões."*
+
+* Rota: `/secundaria/el-nino/temperatura`.
+
+
+
+
+3. **Card OCEANO:**
+* Ícone: Ondas do mar.
+
+
+* Título: **OCEANO**.
+
+
+* Descrição: *"Alterações na temperatura e dinâmica do oceano."*
+
+* Rota: `/secundaria/el-nino/oceano`.
+
+
+
+
+4. **Card SOCIEDADE:**
+* Ícone: Espiga de trigo / Agricultura.
+
+
+* Título: **SOCIEDADE**.
+
+
+* Descrição: *"Possíveis impactos em agricultura, recursos hídricos e outras atividades."*
+
+* Rota: `/secundaria/el-nino/sociedade`.
+
+
+
+
+
+
+
+
+
+---
+
+### 5. Seção de Redirecionamento e Navegação Sequencial
+
+* **Texto Chamada:** *"O aquecimento acontece no Pacífico. Mas a resposta pode ser global."*
+
+* **Botões Duplos de Call-to-Action (CTA):**
+1. **Botão 1 (Estilo Primário Azul):**
+* **Texto:** `"VER LA NIÑA"` acompanhado do ícone de floco de neve.
+
+
+* **Ação:** Evento `onClick` que redireciona para a quarta página principal: **La Niña**.
+
+
+
+
+2. **Botão 2 (Estilo Destaque Verde/Ciano):**
+* **Texto:** `"VER IMPACTOS NO BRASIL"` acompanhado do ícone do mapa do Brasil.
+
+
+* **Ação:** Evento `onClick` que redireciona para a quinta página principal: **Brasil**.

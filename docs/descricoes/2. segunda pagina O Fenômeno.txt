@@ -1,0 +1,120 @@
+## Especificação Técnica UI/UX – Segunda Página Principal ("O Fenômeno")
+
+### 1. Barra de Navegação Superior (`Navbar`)
+
+* **Estado:** Mantém a mesma estrutura e lista de links da primeira página, alterando o estado `active` para a aba **"O Fenômeno"** (ícone de onda selecionado em destaque).
+
+---
+
+### 2. Cabeçalho da Página (`Page Header`)
+
+* **Ícone Principal:** Círculo com ondas em destaque à esquerda do título.
+* **Título:** **O FENÔMENO**
+* **Subtítulo Principal:** *"Tudo começa com uma interação entre o oceano e a atmosfera."*
+* **Texto Explicativo (Direita):** *"O Oceano Pacífico equatorial é o centro desse sistema. A temperatura da água, os ventos e a circulação atmosférica trabalham juntos e podem gerar o El Niño e a La Niña."* (Palavras-chave destacadas em tom azul cyan).
+
+---
+
+### 3. Seção Interativa Principal (Simulador do Pacífico)
+
+#### A. Ilha Visualizadora Diagramática 3D / Animação (Esquerda)
+
+* **Tag da Situação Atual:** Badge superior dinâmico que altera seu texto e cor de fundo de acordo com o estado do slider:
+* Estado Normal: `"O PACÍFICO EM CONDIÇÕES NORMAIS"` (Badge azul neutro).
+
+
+* Estado El Niño: `"O PACÍFICO EM CONDIÇÃO DE EL NIÑO"` (Badge vermelho/laranja).
+* Estado La Niña: `"O PACÍFICO EM CONDIÇÃO DE LA NIÑA"` (Badge azul claro/ciano).
+
+
+* **Comportamento e Transição Dinâmica da Imagem Interativa:**
+A imagem/diagrama 3D altera seus elementos visuais em tempo real conforme os sliders do painel ao lado são ajustados:
+1. **Ao deslizar para EL NIÑO (Aquecimento no Leste):**
+* **Enfraquecimento dos Ventos:** As setas dos *Ventos Alísios* perdem intensidade, diminuem de tamanho ou invertem o sentido (soprando de oeste para leste).
+* **Deslocamento de Água Quente:** A mancha de água quente (vermelho/amarelo) se desloca do oeste (Austrália) em direção ao centro e ao leste do Pacífico (próximo à América do Sul).
+* **Supressão da Ressurgência:** As setas verticais de *Ressurgência* na costa da América do Sul diminuem ou desaparecem, indicando que a água fria profunda não consegue subir.
+* **Circulação Atmosférica:** As nuvens e a área de chuva pesada se movem do oeste para o centro/leste do Pacífico.
+
+
+2. **Ao deslizar para LA NIÑA (Resfriamento no Leste):**
+* **Intensificação dos Ventos:** As setas dos *Ventos Alísios* ficam mais grossas e rápidas, soprando com muito mais força de leste para oeste.
+* **Acúmulo no Oeste:** A massa de água quente é empurrada com mais força para o extremo oeste (Austrália/Indonésia).
+* **Ressurgência Aumentada:** As setas azuis de *Ressurgência* na costa da América do Sul ficam mais fortes e evidentes, expandindo a camada de água fria (azul escuro) pela superfície do Pacífico equatorial.
+* **Circulação Atmosférica:** As nuvens de tempestade ficam concentradas intensamente sobre a Austrália e Indonésia.
+
+
+
+
+* **Legenda/Badges Informativas (Abaixo do Diagrama):**
+* Atualizam dinamicamente os textos descritivos e destaques de acordo com o cenário ativo (Normal, El Niño ou La Niña).
+
+
+
+#### B. Painel de Controle Interativo (`Interactive Control Panel`) (Direita)
+
+* **Título:** **CONDIÇÃO DO PACÍFICO** (Com ícone de ajustadores/sliders).
+
+
+* **Subtítulo:** *"Explore como o sistema muda entre os diferentes cenários."*
+
+* **Controles do Tipo Sliders / Toggle:**
+1. **Slider 1 – EL NIÑO:** Controle deslizante variando de **NORMAL** a **EL NIÑO** (barra em gradiente azul para vermelho).
+
+
+2. **Slider 2 – LA NIÑA:** Controle deslizante variando de **NORMAL** a **LA NIÑA** (barra em tom azul escuro para azul claro).
+
+
+
+
+* **Lógica de Funcionamento:**
+* Conforme o usuário arrasta o slider para **EL NIÑO** ou **LA NIÑA**, o estado do componente (React `useState` / Redux) atualiza dinamicamente o diagrama à esquerda em tempo real.
+
+
+* **Caixa Informativa (`Tooltip` / Nota de Instrução):**
+* Ícone de informação `(i)` com instrução: *"Arraste os controles para ver como o oceano, os ventos e a atmosfera se comportam em cada situação."*
+
+
+
+
+---
+
+### 4. Cards de Tópicos (Atalhos para Páginas Secundárias)
+
+* **Estrutura de Componente:** Cada card funciona integralmente como um **botão/link interativo** (`CardButton` / `<Link>`).
+* **Comportamento de Navegação:**
+* **Importante para o Base44:** Estes 3 cards **NÃO** levam para as páginas principais do menu superior. Eles são atalhos de clique direto para **PÁGINAS SECUNDÁRIAS de aprofundamento detalhado**.
+
+
+* **Mapeamento de Rotas dos Botões:**
+1. **Botão Card OCEANO:** Ícone circular com onda do mar | *"Temperatura da superfície do mar"* | Seta indicador (`→`). Clique direciona para a *Página Secundária: Detalhes do Oceano* (`/secundaria/oceano`).
+
+
+2. **Botão Card ATMOSFERA:** Ícone circular com nuvem/vento | *"Ventos e circulação atmosférica"* | Seta indicador (`→`). Clique direciona para a *Página Secundária: Detalhes da Atmosfera* (`/secundaria/atmosfera`).
+
+
+3. **Botão Card CLIMA:** Ícone circular com globo terrestre | *"Padrões de chuva e temperatura"* | Seta indicador (`→`). Clique direciona para a *Página Secundária: Detalhes do Clima* (`/secundaria/clima`).
+
+
+
+
+* **Feedback Visual:** Ao passar o cursor (*hover*), o card inteiro deve destacar sua borda, aplicar leve elevação/zoom e a seta no canto inferior direito (`→`) deve deslizar levemente para a direita, sinalizando a ação de clique.
+
+---
+
+### 5. Seção de Redirecionamento e Navegação Sequencial
+
+* **Texto Chamada:** *"Agora que você conhece o Pacífico normal, **descubra o que acontece quando ele muda.**"*
+
+* **Botões Duplos de Call-to-Action (CTA):**
+1. **Botão 1 (Laranja/Vermelho):**
+* **Texto:** `"EXPLORAR EL NIÑO"` com ícone de chama/fogo.
+
+
+* **Ação:** Evento `onClick` redirecionando para a página detalhada do **El Niño**.
+
+
+2. **Botão 2 (Azul):**
+* **Texto:** `"EXPLORAR LA NIÑA"` com ícone de floco de neve.
+
+
+* **Ação:** Evento `onClick` redirecionando para a página detalhada da **La Niña**.

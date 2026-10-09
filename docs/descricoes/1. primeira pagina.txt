@@ -1,0 +1,101 @@
+## Especificação Técnica UI/UX – Página Inicial (Landing Page)
+
+### 1. Barra de Navegação Superior (`Navbar`)
+
+* **Layout:** Posicionada no topo com fundo escuro semi-transparente ou fixo (`fixed/sticky header`).
+* **Logo/Branding (Esquerda):**
+* Ícone do planeta terra com ondas.
+* Título: **"CLIMA EM MOVIMENTO"**.
+* Subtítulo: *"Quando o oceano muda, o planeta responde."*
+
+
+* **Menu de Links (Direita) - Botões de Navegação:**
+1. **Início** (Com ícone de casa, marcado como estado `active` / ativo por padrão).
+2. **O Fenômeno** (Com ícone de ondas).
+3. **El Niño** (Com ícone de chama/calor).
+4. **La Niña** (Com ícone de floco de neve).
+5. **Brasil** (Com ícone do mapa do Brasil).
+6. **Dados** (Com ícone de gráfico de barras).
+7. **Desafio** (Com ícone de controle de videogame).
+8. **Sobre** (Com ícone de informação "i").
+
+
+* **Funcionalidade do Menu:**
+* Cada item deve ser um botão/link (`router.push` ou `<Link>`) direcionando para a respectiva página.
+* Efeito de *hover* iluminado e transição para indicar o item selecionado.
+
+
+
+---
+
+### 2. Seção Hero (Área Principal)
+
+#### A. Conteúdo de Texto e Ação (Lado Esquerdo)
+
+* **Tag Superior:** *"BEM-VINDO AO NOSSO PROJETO"* (Texto secundário azul em caixa alta).
+* **Título Principal:** *"CLIMA EM MOVIMENTO"* (Destaque para a palavra "MOVIMENTO" em azul claro brilhante).
+* **Subtítulo:** *"Quando o oceano muda, o planeta responde."*
+* **Botão CTA Principal (`Button`):**
+* **Texto:** `"COMEÇAR A EXPLORAR"` acompanhado de um ícone de seta para a direita `→`.
+* **Estilo Visual:** Botão em formato pílula (`border-radius` arredondado), preenchimento azul brilhante com efeito *glow*/gradiente.
+* **Funcionalidade/Evento:** Evento `onClick` que redireciona o usuário para a página **"O Fenômeno"**.
+
+
+
+#### B. Animação do Globo Terrestre 3D / WebGL (Lado Direito)
+
+* **Componente:** Container interativo 3D (ex.: Canvas via Three.js / React Three Fiber / Cesium.js).
+* **Requisitos da Animação do Globo:**
+1. **Rotação Base:** Globo da Terra renderizado em 3D girando continuamente de forma suave no eixo Y.
+2. **Foco Geográfico:** Ajustar a câmera/ângulo para focar no **Oceano Pacífico** (identificado com a label `"OCEANO PACÍFICO"` em destaque).
+3. **Camada Térmica (El Niño):** Overlay de mapa de calor em gradiente vermelho/laranja cobrindo a região equatorial do Oceano Pacífico para simular o aquecimento das águas.
+4. **Vetores de Ar/Vento:** Setas brancas e amarelas animadas fluindo horizontalmente ao longo do Equador para indicar o movimento e circulação das massas de ar quente.
+5. **Anotações Visuais (Overlays):**
+* Seta indicativa curvada apontando para a zona aquecida com as frases: *"Uma pequena mudança aqui..."* e *"...pode causar grandes impactos aqui!"*.
+
+
+
+
+* **Interatividade:** O globo deve aceitar controles de órbita (drag para girar manualmente, scroll para zoom) mantendo a taxa de quadros (60 FPS).
+
+---
+
+### 3. Seção Intermediária (Chamada e Pergunta)
+
+* **Texto em Destaque:** *"Você sabia que uma mudança na temperatura de uma região do Oceano Pacífico pode alterar padrões climáticos a milhares de quilômetros de distância?"*
+* **Estilização:** Palavras-chave ("Você sabia", "Oceano Pacífico", "milhares de quilômetros de distância") com destaque de cor azul/negrito.
+
+---
+
+### 4. Seção de Cards (Páginas Secundárias)
+
+* **Layout:** Grid de 3 colunas responsivas (`grid-cols-1 md:grid-cols-3`), cada card envolvido por uma borda fina arredondada e fundo escuro translúcido com imagens de background temáticas.
+
+#### Card 1 – Oceano
+
+* **Ícone:** Círculo azul com ondas do mar.
+* **Título:** **OCEANO**
+* **Descrição:** *"Mudanças na temperatura da superfície do mar."*
+* **Botão/Ação:** Seta azul no canto inferior direito (`→`). Todo o card deve ser clicável e redirecionar para a página secundária correspondente ao tema Oceano.
+
+#### Card 2 – Atmosfera
+
+* **Ícone:** Círculo roxo/azul com ícone de vento/fluxo de ar.
+* **Título:** **ATMOSFERA**
+* **Descrição:** *"Alterações nos ventos e na circulação atmosférica."*
+* **Botão/Ação:** Seta roxa no canto inferior direito (`→`). O card completo deve agir como link/botão para a página de Atmosfera.
+
+#### Card 3 – Planeta
+
+* **Ícone:** Círculo verde com ícone do planeta terra.
+* **Título:** **PLANETA**
+* **Descrição:** *"Mudanças nos padrões de chuva e temperatura em diferentes regiões."*
+* **Botão/Ação:** Seta verde no canto inferior direito (`→`). O card completo deve agir como link/botão para a página de Impactos no Planeta.
+
+---
+
+### 5. Rodapé da Seção (Navegação Sequencial)
+
+* **Elemento:** Ícone circular com seta para baixo `↓`.
+* **Texto:** *"MAS O QUE CAUSA TUDO ISSO? DESCUBRA NA PRÓXIMA PÁGINA"*.
+* **Funcionalidade:** Funciona como um botão de scroll suave (*smooth scroll*) ou atalho direto para a próxima página do fluxo ("O Fenômeno").

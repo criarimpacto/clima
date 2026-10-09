@@ -1,0 +1,188 @@
+## Especificação Técnica UI/UX – Quinta Página Principal ("Brasil")
+
+### 1. Barra de Navegação Superior (`Navbar`)
+
+* **Componente:** `Navbar` fixo (`sticky/fixed header`) no topo da página.
+
+
+* **Estado Ativo:** O item **"Brasil"** assume o estado `active` com indicador verde em destaque.
+
+
+
+---
+
+### 2. Cabeçalho da Página (`Page Header`)
+
+* **Ícone Principal:** Ícone vetorial da bandeira/mapa do Brasil em verde e amarelo ao lado do título.
+
+
+* **Título Principal:** **E O BRASIL?**
+
+* **Subtítulo:** *"Como uma mudança no Oceano Pacífico pode influenciar o clima brasileiro?"*
+
+* **Fluxo de Causalidade (Breadcrumb):** `PACÍFICO` $\rightarrow$ `ATMOSFERA` $\rightarrow$ `BRASIL`.
+
+
+
+---
+
+### 3. Seção Interativa Principal (Mapa do Brasil, Controles e Exploração)
+
+#### A. Mapa Interativo do Brasil (Esquerda)
+
+* **Componente:** Mapa vetorial (SVG/Canvas) dividido nas 5 regiões geográficas (Norte, Nordeste, Centro-Oeste, Sudeste e Sul).
+
+
+* **Interatividade e Vínculo com Painel:**
+* Ao clicar em qualquer região diretamente no mapa, a área ganha destaque visual (contorno brilhante/glow).
+
+
+* O clique sincroniza instantaneamente o painel **"EXPLORE UMA REGIÃO"** à direita, carregando o conteúdo correspondente.
+
+
+
+
+* **Feedback Visual de Cenário:**
+* Alteração dinâmica de cores por região conforme o evento selecionado (amarelo/laranja para secas, azul para chuvas acentuadas, verde para normalidade).
+
+
+* Ícones climáticos dinâmicos sobrepostos no mapa (nuvens de chuva, sol com nuvens, sol brilhante).
+
+
+
+
+
+#### B. Seletor de Fenômeno, Legenda e Botoeira de Estados/Regiões (Centro)
+
+* **Botões Superiores de Fenômeno (`Segmented Buttons`):**
+* Alternância direta entre **🔥 EL NIÑO** (Laranja) e **❄ LA NIÑA** (Azul).
+
+
+
+
+* **Legenda do Mapa:**
+* **Ícone de Nuvem:** *"Maior tendência de chuva"*
+
+* **Ícone de Sol com Nuvem:** *"Condições próximas ao normal"*
+
+* **Ícone de Sol:** *"Maior tendência de condições secas"*
+
+
+
+* **Controle Slider Interativo ("MUDE O FENÔMENO"):**
+* Barra deslizante contínua variando entre **🔥 EL NIÑO** e **❄ LA NIÑA**.
+
+
+* Alterar a posição atualiza em tempo real a coloração do mapa e as informações do painel regional.
+
+
+
+
+* **Botoeira de Regiões / Estados (Atalhos para Dados):**
+* **Componentes:** 5 botões de atalho (`NORTE`, `NORDESTE`, `CENTRO-OESTE`, `SUDESTE`, `SUL`).
+
+
+* **Comportamento de Rota (Essencial para Base44):**
+* Ao clicar em qualquer um destes 5 botões, o sistema executa um redirecionamento (`router.push`) diretamente para a página principal **DADOS** (`/dados`).
+
+
+* O clique envia o parâmetro de região/estado (ex.: `/dados?regiao=sul` ou `/dados?estado=SUL`) para abrir a página de dados já filtrada em uma **seção específica com gráficos detalhados das mudanças sofridas por cada região nos episódios de El Niño e La Niña**.
+
+
+
+
+
+#### C. Painel Dinâmico "EXPLORE UMA REGIÃO" (Direita)
+
+* **Título do Painel:** **EXPLORE UMA REGIÃO**
+
+* **Navegador de Regiões:** Seletor com setas laterais (`<` e `>`) para alternar manualmente entre as regiões (`REGIÃO NORTE`, `REGIÃO NORDESTE`, `REGIÃO CENTRO-OESTE`, `REGIÃO SUDESTE`, `REGIÃO SUL`).
+
+
+* **Interação e Troca de Conteúdo:**
+* Ao alterar a região (pelas setas, clique no mapa ou botões), o painel reage atualizando:
+1. **Filtros por Categoria (`Tabs`):** Permite alternar entre os marcadores `CHUVAS`, `TEMPERATURA`, `AGRICULTURA` e `RECURSOS HÍDRICOS`.
+
+
+2. **Texto Explicativo Dinâmico:** Atualiza o resumo descritivo de acordo com a região e o fenômeno ativo.
+* *Exemplo (Região Sul + El Niño):* *"Durante episódios de El Niño, há tendência de aumento dos volumes de chuva no Sul em determinados períodos..."*
+
+* *Exemplo (Região Nordeste + El Niño):* Exibe informações sobre o aumento da estiagem, redução de chuva e impactos na agricultura local e nos reservatórios.
+
+
+
+
+
+
+
+---
+
+### 4. Seção "Por que isso importa?" (Impactos Socioeconômicos)
+
+* **Título da Seção:** **POR QUE ISSO IMPORTA?** acompanhado do ícone do globo.
+
+
+* **Grid de 4 Cards Interativos (Atalhos para Páginas Secundárias):**
+* **Comportamento Interativo (Essencial para Base44):** Cada card atua como um **botão de navegação completo** (`CardButton` / `<Link>`) direcionando para páginas secundárias específicas de aprofundamento (`/secundaria/brasil/...`).
+
+
+
+
+1. **Card ÁGUA:**
+* Ícone: Gota d'água.
+
+
+* Descrição: *"Possíveis alterações na disponibilidade de água e nos níveis de reservatórios."*
+
+* Rota: `/secundaria/brasil/agua`
+
+
+2. **Card AGRICULTURA:**
+* Ícone: Planta/Espiga.
+
+
+* Descrição: *"Mudanças nas condições de chuva e temperatura podem afetar atividades agrícolas."*
+
+* Rota: `/secundaria/brasil/agricultura`
+
+
+3. **Card ENERGIA:**
+* Ícone: Raio de energia.
+
+
+* Descrição: *"Alterações nas chuvas podem influenciar recursos usados na geração de energia."*
+
+* Rota: `/secundaria/brasil/energia`
+
+
+4. **Card CIDADES:**
+* Ícone: Prédios/Urbanismo.
+
+
+* Descrição: *"Eventos climáticos extremos podem aumentar desafios para infraestrutura e população."*
+
+* Rota: `/secundaria/brasil/cidades`
+
+
+
+
+
+---
+
+### 5. Seção de Redirecionamento e Navegação Sequencial
+
+* **Texto Chamada:** *"O fenômeno começa no Pacífico. Os efeitos podem chegar até onde você vive."*
+
+* **Botões Duplos Call-to-Action (CTA):**
+1. **Botão 1 (Verde / Gráfico):**
+* **Texto:** `"VER OS DADOS"`
+
+* **Ação:** Evento `onClick` que navega diretamente para a página principal de **Dados** (`/dados`).
+
+
+
+
+2. **Botão 2 (Verde / Controle de Videogame):**
+* **Texto:** `"TESTAR MEU CONHECIMENTO"`
+
+* **Ação:** Evento `onClick` que navega para a página principal do **Desafio / Quiz** (`/desafio`).

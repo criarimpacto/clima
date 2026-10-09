@@ -1,0 +1,234 @@
+## Especificação Técnica UI/UX – Quarta Página Principal ("La Niña")
+
+### 1. Barra de Navegação Superior (`Navbar`)
+
+* **Componente:** `Navbar` fixo (`sticky/fixed header`) com fundo escuro semi-transparente e efeito de desfoque (`backdrop-blur`).
+
+
+* **Estado Ativo:** O item **"La Niña"** assume o estado `active` com indicador visual de seleção (ícone de floco de neve destacado e glow azul).
+
+
+
+---
+
+### 2. Cabeçalho da Página (`Page Header`)
+
+* **Ícone Principal:** Ícone vetorial de floco de neve (`SnowflakeIcon`) em tom azul/ciano à esquerda do título.
+
+
+* **Título Principal:** **LA NIÑA** em tipografia sem serifa, tamanho grande e cor branca.
+
+
+* **Subtítulo:** *"Quando as águas do Pacífico equatorial ficam anormalmente mais frias, o sistema oceano-atmosfera muda novamente."*
+
+* **Fluxo de Causalidade (Breadcrumb / Chain Component):**
+* Componente visual horizontal exibindo a sequência de impacto: `PACÍFICO` $\rightarrow$ `ATMOSFERA` $\rightarrow$ `CLIMA`.
+
+
+* Cada etapa conta com seu respectivo ícone (Onda, Vento, Globo) e seta indicativa de fluxo.
+
+
+
+
+
+---
+
+### 3. Seção Interativa Principal (Simulador e Análise da La Niña)
+
+#### A. Ilha Visualizadora Diagramática 3D / Animação (Esquerda)
+
+* **Componente:** Visualizador interativo (Canvas WebGL / Three.js) exibindo o corte transversal do Oceano Pacífico e da atmosfera.
+
+
+* **Elementos Visuais e Comportamento Dinâmico:**
+1. **Superfície do Oceano (Anomalia Térmica Fria):**
+* Expansão de camada de água fria em tons de azul escuro com badge indicativo **"PACÍFICO MAIS FRIO"** e **"ÁGUA FRIA"** cobrindo o Pacífico central e leste.
+
+
+* A mancha de **"ÁGUA QUENTE"** (laranja/vermelho) fica totalmente recuada e acumulada no extremo oeste (próximo à Austrália e Indonésia).
+
+
+
+
+2. **Ventos Alísios (Animação de Vento Intensificada):**
+* Setas de vento maiores, com brilho e velocidade de animação acelerada, demonstrando o fortalecimento dos ventos que sopram com força de leste para oeste.
+
+
+
+
+3. **Ressurgência Aumentada (Costa da América do Sul):**
+* Setas verticais azuis apontadas para cima com a tag **"↑ RESSURGÊNCIA"**, indicando a forte subida de águas frias profundas na superfície.
+
+
+
+
+4. **Células de Circulação Atmosférica:**
+* Arcos e vetores de vento no topo marcados como **"ATMOSFERA"**, demonstrando o deslocamento das massas de ar.
+
+
+
+
+
+
+
+#### B. Painel Explicativo e Alternador de Estado (`Interactive Panel / Switch`) (Direita)
+
+* **Estrutura:** Container escuro translúcido com borda suave.
+
+
+* **Título do Painel:** **O QUE MUDOU?**
+
+* **Lista Sequencial de Causa e Efeito:**
+* **01 — O OCEANO ESFRIA:** *"A superfície do Pacífico equatorial central e leste fica mais fria que o normal."*
+
+* **02 — OS VENTOS SE FORTALECEM:** *"Os ventos alísios tendem a ficar mais intensos."*
+
+* **03 — A RESSURGÊNCIA AUMENTA:** *"Mais água fria e profunda pode chegar à superfície próximo à costa oeste da América do Sul."*
+
+
+
+* **Componente Alternador de Estado (`Segmented Control / Toggle Switch`):**
+* **Botões:** `NORMAL` $\leftrightarrow$ `LA NIÑA` (com o botão `LA NIÑA` selecionado em azul claro por padrão).
+
+
+* **Lógica de Estado (`React State`):**
+* Quando `state === "NORMAL"`: O diagrama 3D retorna para as condições médias padrão do Pacífico.
+
+
+* Quando `state === "LA NIÑA"`: O diagrama 3D reativa as animações de ventos fortes, ressurgência acentuada e mancha fria no Pacífico.
+
+
+
+
+
+
+
+---
+
+### 4. Seção Intermediária, Cards de Impactos e Caixa de Comparação
+
+#### A. Header da Seção
+
+* **Título:** **E O RESTO DO PLANETA?** acompanhado do ícone do globo terrestre.
+
+
+* **Subtítulo:** *"Os impactos da La Niña também variam conforme a região e a intensidade do episódio."*
+
+
+#### B. Grid de Cards Interativos (Atalhos para Páginas Secundárias)
+
+* **Layout:** Grid de 4 cards em visual escuro e bordas coloridas translúcidas.
+
+
+* **Comportamento Interativo (Essencial para Base44):** Cada card atua como um **botão de navegação completo** (`CardButton` / `<Link>`) direcionando para páginas secundárias específicas de aprofundamento (`/secundaria/la-nina/...`).
+
+
+1. **Card CHUVAS:**
+* Ícone: Nuvem com chuva.
+
+
+* Título: **CHUVAS**.
+
+
+* Descrição: *"Alterações nos padrões de precipitação."*
+
+* Rota: `/secundaria/la-nina/chuvas`.
+
+
+
+
+2. **Card TEMPERATURA:**
+* Ícone: Termômetro.
+
+
+* Título: **TEMPERATURA**.
+
+
+* Descrição: *"Mudanças nas condições térmicas em diferentes..."*
+
+* Rota: `/secundaria/la-nina/temperatura`.
+
+
+
+
+3. **Card OCEANO:**
+* Ícone: Ondas do mar.
+
+
+* Título: **OCEANO**.
+
+
+* Descrição: *"Alterações na temperatura e dinâmica do oceano."*
+
+* Rota: `/secundaria/la-nina/oceano`.
+
+
+
+
+4. **Card SOCIEDADE:**
+* Ícone: Espiga de trigo / Agricultura.
+
+
+* Título: **SOCIEDADE**.
+
+
+* Descrição: *"Possíveis impactos em agricultura, recursos..."*
+
+* Rota: `/secundaria/la-nina/sociedade`.
+
+
+
+
+
+
+
+#### C. Card Especial de Comparação Direta (`Comparison Highlight Box`)
+
+* **Título Superior:** **🔥 EL NIÑO OU ❄️ LA NIÑA?**
+
+* **Estrutura:** Caixa de destaque ampla posicionada ao lado/abaixo dos cards com resumo dos dois eventos:
+* **🔥 EL NIÑO:** *(Pacífico equatorial mais quente)*
+
+* **❄️️ LA NIÑA:** *(Pacífico equatorial mais frio)*
+
+
+
+* **Botão Interno de Ação Directa (`Button`):**
+* **Texto:** `"X COMPARAR OS DOIS →"` (em cor azul ciano destacada).
+
+
+* **Funcionalidade de Rota para o Base44:** Evento `onClick` que redireciona o usuário para a página principal **DADOS** (`/dados`), presente no menu da barra superior.
+
+
+
+
+
+---
+
+### 5. Seção de Redirecionamento e Navegação Sequencial
+
+* **Texto Chamada:** *"O Pacífico mudou. E agora, como o planeta responde?"*
+
+* **Trinca de Botões Call-to-Action (CTA):**
+1. **Botão 1 (Laranja / Chama):**
+* **Texto:** `"VER EL NIÑO"` com ícone de chama.
+
+
+* **Ação:** Evento `onClick` navegando de volta para a página principal do **El Niño** (`/el-nino`).
+
+
+
+
+2. **Botão 2 (Azul Ciano / Comparador):**
+* **Texto:** `"X COMPARAR OS DOIS →"`
+
+* **Ação:** Evento `onClick` navegando diretamente para a página principal de **Dados** (`/dados`).
+
+
+
+
+3. **Botão 3 (Verde / Mapa do Brasil):**
+* **Texto:** `"IR PARA O BRASIL"` com ícone do mapa do Brasil.
+
+
+* **Ação:** Evento `onClick` navegando para a quinta página principal: **Brasil** (`/brasil`).
